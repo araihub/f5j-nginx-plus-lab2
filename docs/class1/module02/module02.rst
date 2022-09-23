@@ -4,19 +4,18 @@ NGINX Plus の設定
 0. (事前準備) NGINX Plusのインストール
 ====
 
+1. NGINX Plusのインストール・基礎
+----
+
 | 以下のページの内容を参考にNGINX Plus及びモジュールをインストールします
 | `NGINX Plus Lab 1. NGINX Plusのインストール (15min) <https://f5j-nginx-plus-lab1.readthedocs.io/en/latest/class1/module2/module2.html#nginx-plus-15min>`__
 
-| 本ページに記載する手順に従ってNGINX Plus をインストールします
-| 参考：\ `Installing NGINX Plus on Ubuntu <https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-plus/#installing-nginx-plus-on-ubuntu>`__
+| また、このラボは以下の内容を理解していることを前提としています。
+| 初めてNGINX Plusを操作する方は、以下より基本的な挙動について確認をしてください。
+- `NGINX Plus Lab 3. 基本的な動作の確認 <https://f5j-nginx-plus-lab1.readthedocs.io/en/latest/class1/module2/module2.html#id3>`__ を参照してください
 
-.. NOTE::
-   手順確認の目的で、NGINX Plusの他、NGINX App Protect WAF、NGINX App
-   Protect Dosのインストール手順も示しています。
-   ただし、本ラボでセキュリティ機能の確認はありません
-
-その他基本的なNGINXの挙動については、 `NGINX Plus Lab 3. 基本的な動作の確認 <https://f5j-nginx-plus-lab1.readthedocs.io/en/latest/class1/module2/module2.html#id3>`__ を参照してください
-
+2. 環境の初期セットアップ
+----
 
 共通設定としてNGINX Plus API、Dashboardの設定をコピーします
 
