@@ -215,7 +215,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
      }
   }
 
-- `1. ratelimit <>`__ の内容との差分を紹介します
+- `1. ratelimit <https://f5j-nginx-plus-lab2.readthedocs.io/en/latest/class1/module02/module02.html#ratelimit>`__ の内容との差分を紹介します
 - 14行目で、 ``burst=2`` 、 ``nodelay`` オプションを指定し、zone req の limit_req を適用します
 
 .. code-block:: cmdin
@@ -354,7 +354,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
      }
   }
 
-- `1. ratelimit <>`__ の内容との差分を紹介します
+- `1. ratelimit <https://f5j-nginx-plus-lab2.readthedocs.io/en/latest/class1/module02/module02.html#ratelimit>`__ の内容との差分を紹介します
 - 15行目で、 ``limit_req_dry_run`` ``on`` を指定します。このオプションにより、実際に通信は拒否せず、ステータスの確認が可能となります
 
 .. code-block:: cmdin
