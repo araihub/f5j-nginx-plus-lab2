@@ -706,7 +706,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1-8
+  :emphasize-lines: 1-7
 
   upstream server_group {
       zone backend 64k;
@@ -724,7 +724,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
   }
 
 
-- 1-8行目が、ロードバランシングに該当する設定となります
+- 1-7行目が、ロードバランシングに該当する設定となります
 - 3行目に ``ip_hash`` と記述しており、送信元IPアドレスに応じて転送先を決定する動作となります
 
 設定を反映します
@@ -793,7 +793,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1-8
+  :emphasize-lines: 1-7
 
   upstream server_group {
       zone backend 64k;
@@ -810,7 +810,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
      }
   }
 
-- 1-8行目が、ロードバランシングに該当する設定となります
+- 1-7行目が、ロードバランシングに該当する設定となります
 - 3行目に ``hash $request_uri`` と記述しており、先程 ``ip_hash`` の送信元IPアドレスではなく、 ``request URI`` に応じて宛先が決定されます
 
 設定を反映します
