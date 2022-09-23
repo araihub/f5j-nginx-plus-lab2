@@ -17,6 +17,13 @@ NGINX Plus の設定
 2. 環境の初期セットアップ
 ----
 
+以降のラボで利用するファイルを取得します
+
+.. code-block:: cmdin
+
+  cd ~/
+  git clone https://github.com/BeF5/f5j-nginx-plus-lab2-conf
+
 共通設定としてNGINX Plus API、Dashboardの設定をコピーします
 
 .. code-block:: cmdin
@@ -28,16 +35,6 @@ F5ラボ環境を利用の場合、以下のどちらかの手段で接続して
 
 - ``リモートデスクトップに接続している場合`` 、 `http://10.1.1.7:8888/dashboard.html <http://10.1.1.7:8888/dashboard.html>`__ を開いてください
 - ``リモートデスクトップを利用していない場合`` 、ご利用の端末から接続するため、 ``ubuntu01`` の接続メニューより ``PLUS  DASHBOARD`` を選択してください
-
-.. image:: ./media/udf_jumpbox_loginuser2.png
-   :width: 400
-
-以降のラボで利用するファイルを取得します
-
-.. code-block:: cmdin
-
-  cd ~/
-  git clone https://github.com/BeF5/f5j-nginx-plus-lab2-conf
 
 
 1. 流量制御(Rate limit)
