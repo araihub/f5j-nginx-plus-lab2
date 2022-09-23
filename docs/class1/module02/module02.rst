@@ -242,7 +242,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 2,10,18,36
+  :emphasize-lines: 2,10,18,26
 
   ==1==
   HTTP/1.1 200 OK
