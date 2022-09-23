@@ -1295,21 +1295,26 @@ DNSによる名前解決を行い、サービスディスカバリを行いま�
 動作確認
 ----
 
-動作を確認します。
+- DNSサーバで解決した結果を確認
 
 | ステータスを確認するためNGINX Plusのダッシュボードを開いてください。
 | 画面上部 ``HTTP Upstreams`` のタブを選択してください。
 
-DNSを利用したサービスディスカバリの結果、 ``api1`` の名前を解決した結果、ホストが4つ表示されることを確認してください。
+NGINXのresolver設定で指定したDNSサーバで名前を解決し、サーバを表示していることが確認できます。
+``api1`` の名前を解決した結果、ホストが4つ表示されることを確認してください。
 
 NGINX Plus Dashboardの内容は以下のように表示されます
 
 .. image:: ./media/nginx-dnsdiscovery-4hosts.jpg
    :width: 400
 
-Windows Jump Hostへログインいただくと、SSH
-Clientのショートカットがありますので、そちらをダブルクリックし
-``docker_host`` へ接続ください
+
+- DNSサーバで応答する内容の変更
+
+DNSサーバの応答を変更するため、 ``docker_host`` へログインします
+
+Windows Jump Hostへログインいただくと、SSHClientのショートカットがありますので、
+そちらの ``docker_host`` をクリックし、接続してください。
 
    - .. image:: ../module01/media/putty_icon.jpg
       :width: 50
@@ -1317,15 +1322,18 @@ Clientのショートカットがありますので、そちらをダブルク�
    - .. image:: ../module01/media/putty_menu.jpg
       :width: 200
 
-``docker_host`` で以下コマンドを実行し、DNSサーバで設定ファイルを読み込んでください
+``docker_host`` で以下コマンドを実行しファイルを取得します。
 
 .. code-block:: cmdin
 
   cd ~/
   git clone https://github.com/BeF5/f5j-nginx-plus-lab2-conf
 
+以下コマンドを実行し、DNSサーバの設定ファイルを読み込みます。
+
 .. code-block:: cmdin
 
+  cd ~/f5j-nginx-plus-lab2-conf/docker-compose/dnsmasq/
   docker-compose -f dnsmasq-docker-compose2.yaml up -d
 
 .. code-block:: bash
@@ -1334,15 +1342,16 @@ Clientのショートカットがありますので、そちらをダブルク�
 
   Recreating dnsmasq_dns_1 ... done
 
-DNSを利用したサービスディスカバリの結果、 ``api1`` の名前を解決した結果、ホストが2つに変化することを確認してください。
+NGINXのDNSを利用したサービスディスカバリの結果、 ``api1`` で指定したホストが2つに変化することを確認してください。
 
 .. image:: ./media/nginx-dnsdiscovery-2hosts.jpg
    :width: 400
 
-``docker_host`` で以下コマンドを実行することで、元の4つのホストが表示されます
+``docker_host`` で以下コマンドを実行すると、 ``api1`` として元の4つのホストが表示されます
 
 .. code-block:: cmdin
 
+  cd ~/f5j-nginx-plus-lab2-conf/docker-compose/dnsmasq/
   docker-compose -f dnsmasq-docker-compose1.yaml up -d
 
 .. code-block:: bash
