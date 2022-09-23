@@ -24,9 +24,10 @@ NGINX Plus の設定
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/api.conf .
   sudo nginx -s reload
 
-F5ラボ環境を利用の場合、以下の ``いずれか`` で接続してください
-- リモートデスクトップに接続している場合、 `http://10.1.1.7:8888/dashboard.html <http://10.1.1.7:8888/dashboard.html>`__ を開いてください
-- リモートデスクトップを利用していない場合、ご利用の端末から接続するため、 ``ubuntu01`` の接続メニューより ``PLUS  DASHBOARD`` を選択してください
+F5ラボ環境を利用の場合、以下のどちらかの手段で接続してください
+
+- ``リモートデスクトップに接続している場合`` 、 `http://10.1.1.7:8888/dashboard.html <http://10.1.1.7:8888/dashboard.html>`__ を開いてください
+- ``リモートデスクトップを利用していない場合`` 、ご利用の端末から接続するため、 ``ubuntu01`` の接続メニューより ``PLUS  DASHBOARD`` を選択してください
 
 .. image:: ./media/udf_jumpbox_loginuser2.png
    :width: 400
