@@ -529,12 +529,12 @@ Connection Limitの設定を紹介します。
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1,3,6,15
+  :emphasize-lines: 1,3,4,6,15
 
-  $ curl -I -s "localhost/wait?msec=5000" &  << 1回目のリクエストを実行
+  $ curl -I -s localhost &  << 1回目のリクエストを実行
   [1] 24683
   $ << 1回目のリクエストの結果を待たず、プロンプトが表示される
-  $ curl -I -s "localhost/wait?msec=5000" &  << 2回目のリクエストを実行
+  $ curl -I -s localhost &  << 2回目のリクエストを実行
   [2] 24685
   HTTP/1.1 503 Service Temporarily Unavailable
   Server: nginx/1.21.6
