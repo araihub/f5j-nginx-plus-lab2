@@ -150,7 +150,6 @@ Error Log の内容を確認します
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1-2
 
   2022/09/22 16:07:33 [error] 23556#23556: *1493 limiting requests, excess: 0.990 by zone "req", client: 127.0.0.1, server: , request: "HEAD / HTTP/1.1", host: "localhost"
   2022/09/22 16:07:33 [error] 23555#23555: *1494 limiting requests, excess: 0.981 by zone "req", client: 127.0.0.1, server: , request: "HEAD / HTTP/1.1", host: "localhost"
