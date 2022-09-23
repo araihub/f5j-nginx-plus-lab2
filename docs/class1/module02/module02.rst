@@ -95,7 +95,7 @@ Rate Limitの設定を紹介します。
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/ratelimit1.conf /etc/nginx/conf.d/default.conf
   sudo nginx -s reload
 
-エラーが出力されないことを確認してください
+
 
 動作確認
 ~~~~
@@ -226,7 +226,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/ratelimit2-burst-nodelay.conf /etc/nginx/conf.d/default.conf
   sudo nginx -s reload
 
-エラーが出力されないことを確認してください
+
 
 動作確認
 ~~~~
@@ -365,7 +365,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/ratelimit3-dryrun.conf /etc/nginx/conf.d/default.conf
   sudo nginx -s reload
 
-エラーが出力されないことを確認してください
+
 
 動作確認
 ~~~~
@@ -514,7 +514,7 @@ Connection Limitの設定を紹介します。
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/connlimit1.conf /etc/nginx/conf.d/default.conf
   sudo nginx -s reload
 
-エラーが出力されないことを確認してください
+
 
 動作確認
 ----
@@ -649,7 +649,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/lb1.conf /etc/nginx/conf.d/default.conf
   sudo nginx -s reload
 
-エラーが出力されないことを確認してください
+
 
 動作確認
 ~~~~
@@ -737,7 +737,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/lb2-ip_hash.conf /etc/nginx/conf.d/default.conf
   sudo nginx -s reload
 
-エラーが出力されないことを確認してください
+
 
 動作確認
 ~~~~
@@ -823,7 +823,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/lb3-hash.conf /etc/nginx/conf.d/default.conf
   sudo nginx -s reload
 
-エラーが出力されないことを確認してください
+
 
 動作確認
 ~~~~
@@ -928,7 +928,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/lb4-least_time.conf /etc/nginx/conf.d/default.conf
   sudo nginx -s reload
 
-エラーが出力されないことを確認してください
+
 
 動作確認
 ~~~~
@@ -1311,10 +1311,10 @@ Windows Jump Hostへログインいただくと、SSH
 Clientのショートカットがありますので、そちらをダブルクリックし
 ``docker_host`` へ接続ください
 
-   - .. image:: ../module1/media/putty_icon.jpg
+   - .. image:: ../module01/media/putty_icon.jpg
       :width: 50
 
-   - .. image:: ../module1/media/putty_menu.jpg
+   - .. image:: ../module01/media/putty_menu.jpg
       :width: 200
 
 ``docker_host`` で以下コマンドを実行し、DNSサーバで設定ファイルを読み込んでください
