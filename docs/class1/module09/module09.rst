@@ -1,7 +1,7 @@
 補足情報
 ####
 
-Tips1. 
+Tips1. OpenSSL CA(認証局) の設定
 ====
 
 ホストのVersion情報は以下の通り
