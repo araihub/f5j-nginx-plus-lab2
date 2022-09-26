@@ -944,7 +944,6 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 7
 
   ==1==
   { "request_uri": "/","server_addr":"10.1.1.8","server_port":"81"}
