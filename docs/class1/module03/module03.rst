@@ -33,7 +33,7 @@ SSLを終端する際に利用するサーバ証明書を作成します
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1-8
+  :emphasize-lines: 30,33
 
   Using configuration from ./openssl.cnf
   Check that the request matches the signature
@@ -86,7 +86,7 @@ SSLを終端する際に利用するサーバ証明書を作成します
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1-8
+  :emphasize-lines: 26,29
 
   Using configuration from ./openssl.cnf
   Check that the request matches the signature
@@ -133,7 +133,7 @@ SSLを終端する際に利用するサーバ証明書を作成します
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1-8
+  :emphasize-lines: 30,33
 
   Using configuration from ./openssl.cnf
   Check that the request matches the signature
@@ -181,7 +181,6 @@ SSLを終端する際に利用するサーバ証明書を作成します
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1-8
 
   V       230926103540Z           01      unknown /C=JP/ST=Tokyo/O=EXAMPLE COM/CN=webapp.example.com/emailAddress=admin@example.com
   V       230926103629Z           02      unknown /C=JP/ST=Tokyo/O=EXAMPLE COM/CN=client1.example.com/emailAddress=admin@example.com
@@ -192,7 +191,6 @@ SSLを終端する際に利用するサーバ証明書を作成します
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1-8
 
   $ cat serial
   04
@@ -429,7 +427,8 @@ SSLを終端する際に利用するサーバ証明書を作成します
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-
+  :emphasize-lines: 3
+  
   V       230926105845Z           01      unknown /C=JP/ST=Tokyo/O=EXAMPLE COM/CN=webapp.example.com/emailAddress=admin@example.com
   V       230926105859Z           02      unknown /C=JP/ST=Tokyo/O=EXAMPLE COM/CN=client1.example.com/emailAddress=admin@example.com
   R       230926105912Z   220926110407Z   03      unknown /C=JP/ST=Tokyo/O=EXAMPLE COM/CN=client2.example.com/emailAddress=admin@example.com
