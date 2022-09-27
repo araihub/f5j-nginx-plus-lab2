@@ -42,6 +42,24 @@ F5ラボ環境を利用の場合、以下のどちらかの手段で接続して
 
 Rate Limitの設定を紹介します。
 
+.. image:: ./media/nginx-ratelimit-slide1.jpg
+   :width: 500
+
+.. image:: ./media/nginx-ratelimit-slide2.jpg
+   :width: 500
+
+.. image:: ./media/nginx-ratelimit-slide3.jpg
+   :width: 500
+
+.. image:: ./media/nginx-ratelimit-slide4.jpg
+   :width: 500
+
+.. image:: ./media/nginx-ratelimit-slide5.jpg
+   :width: 500
+
+.. image:: ./media/nginx-ratelimit-slide6.jpg
+   :width: 500
+
 使用するディレクティブの詳細は以下のページを参照してください。
 
 - HTTP Request Limit の詳細: `ngx_http_limit_req_module <http://nginx.org/en/docs/http/ngx_http_limit_req_module.html>`__ 
@@ -82,7 +100,7 @@ Rate Limitの設定を紹介します。
      }
   }
 
-- 1行目で、Request limit を設定します。 Request Limit の Key を ``$remote_addr`` 、 zone名を ``req``、rate を ``1r/s(1秒間1リクエスト)`` と指定しています。これらにより、同一の送信元IPアドレスに対し、指定したリクエストのみを許可するルールとなります
+- 1行目で、Rate Limit を設定します。 Request Limit の Key を ``$remote_addr`` 、 zone名を ``req``、rate を ``1r/s(1秒間1リクエスト)`` と指定しています。これらにより、同一の送信元IPアドレスに対し、指定したリクエストのみを許可するルールとなります
 - 14行目で、zone名を指定する事によりポリシーを選択・適用します。複数の limit_req_zone を定義した場合、Zone名を切り替える事により適用ルールを選択することが可能です
 - 13行目で、status_zone を記述し、 ``root`` という名称の location status zone を指定しています。NGINX Plusではこの機能により、Rate Limitの状況を確認することが可能です
 
@@ -139,7 +157,7 @@ Rate Limitの設定を紹介します。
   Connection: keep-alive
 
 - 1回目の実行で、 ``200 OK`` が応答されていることが確認できます
-- 2回目、3回目は、Request limit により ``503 Service Temorarily Unavailable`` が応答されていることがわかります。
+- 2回目、3回目は、Rate Limit により ``503 Service Temorarily Unavailable`` が応答されていることがわかります。
 
 Error Log の内容を確認します
 
@@ -154,7 +172,7 @@ Error Log の内容を確認します
   2022/09/22 16:07:33 [error] 23556#23556: *1493 limiting requests, excess: 0.990 by zone "req", client: 127.0.0.1, server: , request: "HEAD / HTTP/1.1", host: "localhost"
   2022/09/22 16:07:33 [error] 23555#23555: *1494 limiting requests, excess: 0.981 by zone "req", client: 127.0.0.1, server: , request: "HEAD / HTTP/1.1", host: "localhost"
 
-zone ``req`` で Request limit が2件記録されていることが確認できます
+zone ``req`` で Rate Limit が2件記録されていることが確認できます
 
 Access Log の内容を確認します
 
@@ -277,7 +295,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
   Connection: keep-alive
 
 - 1-3回目の実行で、 ``200 OK`` が応答されていることが確認できます。これは ``burst=2`` で指定した数だけ、指定のLimitを超過するアクセスが許可されています
-- 4回目の実行で、Request limit により ``503 Service Temorarily Unavailable`` が応答されていることがわかります。
+- 4回目の実行で、Rate Limit により ``503 Service Temorarily Unavailable`` が応答されていることがわかります。
 
 Error Log の内容を確認します
 
@@ -291,7 +309,7 @@ Error Log の内容を確認します
 
   2022/09/22 16:10:20 [error] 23778#23778: *1507 limiting requests, excess: 2.972 by zone "req", client: 127.0.0.1, server: , request: "HEAD / HTTP/1.1", host: "localhost"
 
-zone ``req`` で Request limit が記録されていることが確認できます
+zone ``req`` で Rate Limit が記録されていることが確認できます
 
 Access Log の内容を確認します
 
@@ -429,7 +447,7 @@ Error Log の内容を確認します
 
   2022/09/22 16:20:18 [error] 23890#23890: *1532 limiting requests, dry run, excess: 2.953 by zone "req", client: 127.0.0.1, server: , request: "HEAD / HTTP/1.1", host: "localhost"
 
-通信は拒否されていませんでしたが、zone ``req`` で Request limit の ``Dry Run`` が記録されていることが確認できます
+通信は拒否されていませんでしたが、zone ``req`` で Rate Limit の ``Dry Run`` が記録されていることが確認できます
 
 Access Log の内容を確認します
 
@@ -461,6 +479,9 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 ====
 
 Connection Limitの設定を紹介します。
+
+.. image:: ./media/nginx-connlimit-slide1.jpg
+   :width: 500
 
 使用するディレクティブの詳細は以下のページを参照してください。
 
@@ -603,9 +624,11 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 - HTTP Upstream の詳細: `ngx_http_upstream_module <http://nginx.org/en/docs/http/ngx_http_upstream_module.html>`__ 
 - HTTP Load Balancing解説:  `HTTP Load Balancing <https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/>`__
 
-
 1. round robin (default)
 ----
+
+.. image:: ./media/nginx-rr-slide.jpg
+   :width: 500
 
 設定
 ~~~~
@@ -694,6 +717,11 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 2. ip_hash
 ----
 
+.. image:: ./media/nginx-hash-slide.jpg
+   :width: 500
+
+``ip_hash`` は 送信元IPアドレスを元に転送先を設定します
+
 設定
 ~~~~
 
@@ -780,6 +808,11 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 
 3. hash (request uri)
 ----
+
+.. image:: ./media/nginx-hash-slide.jpg
+   :width: 500
+
+``hash`` は ``ip_hash`` と異なり、利用するパラメータを設定で指定することが可能です
 
 設定
 ~~~~
@@ -885,6 +918,9 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 4. least_time
 ----
 
+.. image:: ./media/nginx-lt-slide.jpg
+   :width: 500
+
 設定
 ~~~~
 
@@ -973,6 +1009,9 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 ====
 
 アクティブヘルスチェックの設定を紹介します。
+
+.. image:: ./media/nginx-ah-slide.jpg
+   :width: 500
 
 使用するディレクティブや設定の解説は以下のページを参照してください。
 
@@ -1118,6 +1157,9 @@ Health Checkはこれらの文字列ステータスをもとに、サーバの�
 
 セッションパーシステンスの設定を紹介します。
 
+.. image:: ./media/nginx-sticky-slide.jpg
+   :width: 500
+
 使用するディレクティブや設定の解説は以下のページを参照してください。
 
 - HTTP Upstream Sticky の詳細: `ngx_http_upstream_module / sticky <http://nginx.org/en/docs/http/ngx_http_upstream_module.html#sticky>`__ 
@@ -1239,6 +1281,9 @@ Health Checkはこれらの文字列ステータスをもとに、サーバの�
 ====
 
 サービスディスカバリの設定を紹介します。
+
+.. image:: ./media/nginx-sd-slide.jpg
+   :width: 500
 
 使用するディレクティブや設定の解説は以下のページを参照してください。
 

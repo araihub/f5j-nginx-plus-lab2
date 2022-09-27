@@ -6,6 +6,9 @@ NGINX Plus 認証・認可の設定
 
 クライアントから正しい証明書が提示されたことを検証し、接続を許可する設定です
 
+.. image:: ./media/nginx-mtls-slide.jpg
+   :width: 500
+
 1. mTLS / SSL証明書認証の実施
 ----
 
@@ -660,6 +663,9 @@ SSLを終端する際に利用するサーバ証明書を作成します
 
 Webサーバなどで用いられるシンプルなユーザ認証であるBasic認証の動作を確認します
 
+.. image:: ./media/nginx-basic-slide.jpg
+   :width: 500
+
 設定
 ----
 
@@ -798,6 +804,9 @@ httpasswd の内容は以下のユーザ情報を記述しています
 ====
 
 NGINX Plus は JWT の検証が可能です。またJWT Claimにアクセスし、様々な通信制御を実施することが可能です
+
+.. image:: ./media/nginx-jwt-slide.jpg
+   :width: 500
 
 1. JWT Validation
 ----
@@ -1284,6 +1293,9 @@ Errorログを確認します
 
 OIDCのRPとしてNGINXを動作させる方法を説明します
 
+.. image:: ./media/nginx-oidc-slide.jpg
+   :width: 500
+
 KeyCloakの設定
 ----
 
@@ -1412,6 +1424,12 @@ NJSモジュールがインストールされたことを確認します
   configure.sh: NOTICE:  - $oidc_hmac_key ... ok
   configure.sh: NOTICE:  - $oidc_pkce_enable ... ok
   configure.sh: NOTICE: Success - test configuration with 'nginx -t'
+
+生成されるコンフィグの配置イメージ、及び参照は以下のようになります。
+このラボでは ``frontend.conf`` は別途予め修正した別コンフィグをコピーし ``default.conf`` として配置します
+
+.. image:: ./media/nginx-oidc-files-slide.jpg
+   :width: 500
 
 NJSモジュールを有効にするため ``load_modules`` ディレクティブを ``nginx.conf`` に追加します
 
