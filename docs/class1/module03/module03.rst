@@ -428,7 +428,7 @@ SSLを終端する際に利用するサーバ証明書を作成します
   :caption: 実行結果サンプル
   :linenos:
   :emphasize-lines: 3
-  
+
   V       230926105845Z           01      unknown /C=JP/ST=Tokyo/O=EXAMPLE COM/CN=webapp.example.com/emailAddress=admin@example.com
   V       230926105859Z           02      unknown /C=JP/ST=Tokyo/O=EXAMPLE COM/CN=client1.example.com/emailAddress=admin@example.com
   R       230926105912Z   220926110407Z   03      unknown /C=JP/ST=Tokyo/O=EXAMPLE COM/CN=client2.example.com/emailAddress=admin@example.com
@@ -759,7 +759,6 @@ httpasswd の内容は以下のユーザ情報を記述しています
 |user3|user3   |
 +-----+--------+
 
-
 対象のPATHに対して ユーザ名 ``user1`` パスワード ``user1`` を指定し、動作を確認します
 
 .. code-block:: cmdin
@@ -798,11 +797,489 @@ httpasswd の内容は以下のユーザ情報を記述しています
 3. JWTによる通信制御
 ====
 
-設定
+NGINX Plus は JWT の検証が可能です。またJWT Claimにアクセスし、様々な通信制御を実施することが可能です
+
+1. JWT Validation
 ----
 
+設定
+~~~~
+
+設定内容を確認します
+
+.. code-block:: cmdin
+
+  cat ~/f5j-nginx-plus-lab2-conf/lab/jwt1.conf
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 12-14
+
+  upstream server_group {
+      zone backend 64k;
+  
+      server app-backend1:8080;
+  }
+  
+  server {
+     listen 80;
+     location / {
+         proxy_pass http://server_group;
+     }
+     location /auth {
+         auth_jwt "Products API";
+         auth_jwt_key_file conf.d/jwt/api_secret.jwk;
+         proxy_pass http://server_group;
+     }
+  }
+
+JWTの動作確認では、HTTPリクエストの情報を応答するサーバを転送先として指定しています。
+
+設定を反映します
+
+.. code-block:: cmdin
+
+  sudo cp -r ~/f5j-nginx-plus-lab2-conf/jwt/ /etc/nginx/conf.d/
+  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/jwt1.conf /etc/nginx/conf.d/default.conf
+  sudo nginx -s reload
+
 動作確認
+~~~~
+
+PATH ``/auth`` に対し、JWTを含まないリクエストを送信し、動作を確認します
+
+.. code-block:: cmdin
+
+  curl -v localhost/auth
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 10,16,19,21
+
+  *   Trying 127.0.0.1:80...
+  * TCP_NODELAY set
+  * Connected to localhost (127.0.0.1) port 80 (#0)
+  > GET /auth HTTP/1.1
+  > Host: localhost
+  > User-Agent: curl/7.68.0
+  > Accept: */*
+  >
+  * Mark bundle as not supporting multiuse
+  < HTTP/1.1 401 Unauthorized
+  < Server: nginx/1.21.6
+  < Date: Mon, 26 Sep 2022 14:41:47 GMT
+  < Content-Type: text/html
+  < Content-Length: 179
+  < Connection: keep-alive
+  < WWW-Authenticate: Bearer realm="Products API"
+  <
+  <html>
+  <head><title>401 Authorization Required</title></head>
+  <body>
+  <center><h1>401 Authorization Required</h1></center>
+  <hr><center>nginx/1.21.6</center>
+  </body>
+  </html>
+  * Connection #0 to host localhost left intact
+
+- ``401 Authorization Required`` とエラーが表示され、通信が拒否されていることが確認できます
+
+次に正しいJWTを含むリクエストを送り、結果を確認します
+
+.. code-block:: cmdin
+
+  curl -v localhost/auth -H "Authorization: Bearer `cat jwt/nginx1.jwt`"
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 8,11
+  
+  *   Trying 127.0.0.1:80...
+  * TCP_NODELAY set
+  * Connected to localhost (127.0.0.1) port 80 (#0)
+  > GET /auth HTTP/1.1
+  > Host: localhost
+  > User-Agent: curl/7.68.0
+  > Accept: */*
+  > Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6IjAwMDEifQ.eyJpc3MiOiJNeSBJRFAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoibmdpbngtcGx1cyIsInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6Im5naW54MSB1c2VyIiwicHJlZmVycmVkX3VzZXJuYW1lIjoibmdpbngxLXVzZXIiLCJnaXZlbl9uYW1lIjoibmdpbngxIiwiZmFtaWx5X25hbWUiOiJ1c2VyIiwiZW1haWwiOiJuZ2lueDFAZXhhbXBsZS5jb20ifQ.sOKct6cXUVpHdbF7s7U46LRXOWxzPZVZPL4hSaLiFoE
+  >
+  * Mark bundle as not supporting multiuse
+  < HTTP/1.1 200 OK
+  < Server: nginx/1.21.6
+  < Date: Mon, 26 Sep 2022 14:47:08 GMT
+  < Content-Type: application/octet-stream
+  < Content-Length: 940
+  < Connection: keep-alive
+  <
+  * Connection #0 to host localhost left intact
+  {"request":{"headers":[["Host","server_group"],["Connection","close"],["User-Agent","curl/7.68.0"],["Accept","*/*"],["Authorization","Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6IjAwMDEifQ.eyJpc3MiOiJNeSBJRFAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoibmdpbngtcGx1cyIsInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6Im5naW54MSB1c2VyIiwicHJlZmVycmVkX3VzZXJuYW1lIjoibmdpbngxLXVzZXIiLCJnaXZlbl9uYW1lIjoibmdpbngxIiwiZmFtaWx5X25hbWUiOiJ1c2VyIiwiZW1haWwiOiJuZ2lueDFAZXhhbXBsZS5jb20ifQ.sOKct6cXUVpHdbF7s7U46LRXOWxzPZVZPL4hSaLiFoE"]],"status":0,"httpversion":"1.0","method":"GET","scheme":"http","uri":"/auth","fullPath":"/auth"},"network":{"clientPort":"51744","clientAddress":"10.1.1.7","serverAddress":"172.19.0.2","serverPort":"8080"},"ssl":{"isHttps":false},"session":{"httpConnection":"close","requestId":"8f8e5fbc233a0d05683f0718f789e23b","connection":"2","connectionNumber":"1"},"environment":{"hostname":"echoapp.net"}}
+
+- 8行目で、リクエストのAuthorization Headerに、指定した値が含まれていることがわかります
+- 11行目で、 ``200 OK`` が応答されており、正しく通信ができたことが確認できます
+
+2. JWTの詳細ログ
+
+JWTは様々な情報をClaimとして保持します。それらの情報を確認します
+
+設定
+~~~~
+
+設定内容を確認します
+
+.. code-block:: cmdin
+
+  cat ~/f5j-nginx-plus-lab2-conf/lab/jwt2-detailinfo.conf
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 1-3,26,20-24
+
+  log_format jwt '$remote_addr - $remote_user [$time_local] "$request" '
+                 '$status $body_bytes_sent "$http_referer" "$http_user_agent" '
+                 '$jwt_header_alg $jwt_claim_sub $jwt_claim_scope $jwt_claim_name $jwt_claim_email';
+  
+  upstream server_group {
+      zone backend 64k;
+  
+      server app-backend1:8080;
+  }
+  
+  server {
+     listen 80;
+     location / {
+         proxy_pass http://server_group;
+     }
+     location /auth {
+         auth_jwt "Products API";
+         auth_jwt_key_file conf.d/jwt/api_secret.jwk;
+  
+         proxy_set_header API-Client $jwt_claim_sub;
+         proxy_set_header JWT-alg $jwt_header_alg;
+         proxy_set_header JWT-sub $jwt_claim_sub;
+         proxy_set_header JWT-scope $jwt_claim_scope;
+         proxy_set_header JWT-email $jwt_claim_email;
+  
+         access_log /var/log/nginx/access_jwt.log jwt;
+         proxy_pass http://server_group;
+     }
+  }
+
+
+- 1-3行目で、 ``log_format`` Directive を利用して、LogFormatを記述しています。3行目に ``$jwt_`` から始まる変数を指定します
+- 26行目で、 ``access_log`` Directive を利用して ``log_format`` で定義した ``jwt`` のフォーマットを指定することで、指定のファイルに指定のフォーマットでログを出力します
+- 20-24行目で、 ``proxy_set_header`` Directive を利用して バックエンドサーバへ転送するリクエストにJWTの情報をHTTPヘッダーとして付与します
+
+
+設定を反映します
+
+.. code-block:: cmdin
+
+  #sudo cp -r ~/f5j-nginx-plus-lab2-conf/jwt/ /etc/nginx/conf.d/
+  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/jwt2-detailinfo.conf /etc/nginx/conf.d/default.conf
+  sudo nginx -s reload
+
+動作確認
+~~~~
+
+2つのJWTを使ってリクエストを送ります。
+
+1回目 ``nginx1`` の応答を確認します
+
+.. code-block:: cmdin
+
+  curl -s localhost/auth -H "Authorization: Bearer `cat jwt/nginx1.jwt`" | jq .request.headers
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 3-4,7-8,11-12,15-16,19-20
+
+  [
+    [
+      "API-Client",
+      "nginx-plus"
+    ],
+    [
+      "JWT-alg",
+      "HS256"
+    ],
+    [
+      "JWT-sub",
+      "nginx-plus"
+    ],
+    [
+      "JWT-scope",
+      "profile email"
+    ],
+    [
+      "JWT-email",
+      "nginx1@example.com"
+    ],
+    [
+      "Host",
+      "server_group"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "User-Agent",
+      "curl/7.68.0"
+    ],
+    [
+      "Accept",
+      "*/*"
+    ],
+    [
+      "Authorization",
+      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6IjAwMDEifQ.eyJpc3MiOiJNeSBJRFAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoibmdpbngtcGx1cyIsInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6Im5naW54MSB1c2VyIiwicHJlZmVycmVkX3VzZXJuYW1lIjoibmdpbngxLXVzZXIiLCJnaXZlbl9uYW1lIjoibmdpbngxIiwiZmFtaWx5X25hbWUiOiJ1c2VyIiwiZW1haWwiOiJuZ2lueDFAZXhhbXBsZS5jb20ifQ.sOKct6cXUVpHdbF7s7U46LRXOWxzPZVZPL4hSaLiFoE"
+    ]
+  ]
+
+設定で付与したHTTPヘッダーの情報が、バックエンドのサーバから応答されていることが確認できます
+
+2回目 ``nginx2`` の応答を確認します
+
+.. code-block:: cmdin
+
+  curl -s localhost/auth -H "Authorization: Bearer `cat jwt/nginx2.jwt`" | jq .request.headers
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 3-4,7-8,11-12,15-16,19-20
+
+  [
+    [
+      "API-Client",
+      "nginx-plus"
+    ],
+    [
+      "JWT-alg",
+      "HS256"
+    ],
+    [
+      "JWT-sub",
+      "nginx-plus"
+    ],
+    [
+      "JWT-scope",
+      "profile email"
+    ],
+    [
+      "JWT-email",
+      "nginx2@example.com"
+    ],
+    [
+      "Host",
+      "server_group"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "User-Agent",
+      "curl/7.68.0"
+    ],
+    [
+      "Accept",
+      "*/*"
+    ],
+    [
+      "Authorization",
+      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6IjAwMDEifQ.eyJpc3MiOiJNeSBJRFAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoibmdpbngtcGx1cyIsInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6Im5naW54MiB1c2VyIiwicHJlZmVycmVkX3VzZXJuYW1lIjoibmdpbngyLXVzZXIiLCJnaXZlbl9uYW1lIjoibmdpbngyIiwiZmFtaWx5X25hbWUiOiJ1c2VyIiwiZW1haWwiOiJuZ2lueDJAZXhhbXBsZS5jb20ifQ.CVUH7upnT5n2yzLnlGhNTMKL_Ev6yJfj8FHSFC5v5ME"
+    ]
+  ]
+
+先程と同様に、正しくHTTPヘッダーが付与されていることが確認できます。
+
+ログを確認します
+
+.. code-block:: cmdin
+
+  tail -2 /var/log/nginx/access_jwt.log
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+
+  127.0.0.1 - - [27/Sep/2022:00:04:41 +0900] "GET /auth HTTP/1.1" 200 1079 "-" "curl/7.68.0" HS256 nginx-plus profile email nginx1 user nginx1@example.com
+  127.0.0.1 - - [27/Sep/2022:00:04:48 +0900] "GET /auth HTTP/1.1" 200 1079 "-" "curl/7.68.0" HS256 nginx-plus profile email nginx2 user nginx2@example.com
+
+nginx1, nginx2 のそれぞれの接続で正しく ``200`` が応答されており、 JWTの情報がログに記録されていることが確認できます
+
+3. 複雑な制御
 ----
+
+JWTに含まれる情報を用いて、通信を制御する動作を確認します
+
+設定
+~~~~
+
+設定内容を確認します
+
+.. code-block:: cmdin
+
+  cat ~/f5j-nginx-plus-lab2-conf/lab/jwt3-complicate.conf
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 1,3-6,8-12,14,20,29,37,36,34
+
+  limit_req_zone $jwt_claim_sub zone=1rpm_per_client:1m rate=1r/m;
+  
+  log_format jwt '$remote_addr - $remote_user [$time_local] "$request" '
+                 '$status $body_bytes_sent "$http_referer" "$http_user_agent" '
+                 '$jwt_claim_scope $jwt_claim_name $jwt_claim_email '
+                 '$jwt_claim_sub $jwt_upstream';
+  
+  map $jwt_claim_scope $jwt_upstream {
+      ~group1 "slow_group";
+      ~group2 "slow_group";
+      default default_group;
+  }
+  
+  upstream slow_group {
+      zone backend 64k;
+  
+      server app-backend1:8080;
+  }
+  
+  upstream default_group {
+      zone backend 64k;
+  
+      server app-backend2:8080;
+  }
+  
+  server {
+     listen 80;
+     location / {
+         proxy_pass http://$jwt_upstream;
+     }
+     location /auth {
+         auth_jwt "Products API";
+         auth_jwt_key_file conf.d/jwt/api_secret.jwk;
+         access_log /var/log/nginx/access_jwt.log jwt;
+  
+         limit_req zone=1rpm_per_client;
+         proxy_pass http://$jwt_upstream;
+     }
+  }
+
+- 1行目で ``$jwt_claim_sub`` をKeyとした、Request Limitを設定し、36行目で、 ``/auth`` のPATHに適用します
+- | 8-12行目で、 ``map`` Directiveを使用し、 ``$jwt_claim_scope`` に含まれる値に応じて ``$jwt_upstream`` という変数の値を選択するよう記述します。
+  | group1 , group2 の場合には、 応答の遅いUpstreamを想定し ``slow_group`` 、 通常は ``default_group`` に転送する動作となります
+- 29行目、37行目で転送先を指定しますが、宛先Upstreamの名称に ``$jwt_upstream`` を指定します
+
+設定を反映します
+
+.. code-block:: cmdin
+
+  #sudo cp -r ~/f5j-nginx-plus-lab2-conf/jwt/ /etc/nginx/conf.d/
+  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/jwt3-complicate.conf /etc/nginx/conf.d/default.conf
+  sudo nginx -s reload
+
+動作確認
+~~~~
+
+1回目 ``nginx3.jwt`` 、 2回目 ``nginx1.jwt`` で続けて接続します
+
+.. code-block:: cmdin
+
+  curl -s localhost/auth -H "Authorization: Bearer `cat jwt/nginx3.jwt`" | jq .request.headers
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 1
+
+  [
+    [
+      "Host",
+      "slow_group"
+    ],
+    [
+      "Connection",
+      "close"
+    ],
+    [
+      "User-Agent",
+      "curl/7.68.0"
+    ],
+    [
+      "Accept",
+      "*/*"
+    ],
+    [
+      "Authorization",
+      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImtpZCI6IjAwMDEifQ.eyJpc3MiOiJNeSBJRFAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoibmdpbngtcGx1cyIsInNjb3BlIjoicHJvZmlsZSBlbWFpbCBncm91cDIiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsIm5hbWUiOiJuZ2lueDMgdXNlciIsInByZWZlcnJlZF91c2VybmFtZSI6Im5naW54My11c2VyIiwiZ2l2ZW5fbmFtZSI6Im5naW54MyIsImZhbWlseV9uYW1lIjoidXNlciIsImVtYWlsIjoibmdpbngzQGV4YW1wbGUuY29tIn0.CGa2fDJFiTJwlNgqW6IdCENu_Re0gkPTaww-glCHckM"
+    ]
+  ]
+
+
+.. code-block:: cmdin
+
+  curl -s localhost/auth -H "Authorization: Bearer `cat jwt/nginx1.jwt`"
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 1
+
+  <html>
+  <head><title>503 Service Temporarily Unavailable</title></head>
+  <body>
+  <center><h1>503 Service Temporarily Unavailable</h1></center>
+  <hr><center>nginx/1.21.6</center>
+  </body>
+  </html>
+
+| 1回目 ``nginx3.jwt`` でアクセスした場合、正しく応答が確認できました
+| 2回目 ``nginx1.jwt`` でアクセスした場合、 ``503 Service Temporarily Unavailable`` が応答されています
+
+ログを確認します
+
+.. code-block:: cmdin
+
+  tail -2 /var/log/nginx/access_jwt.log
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 1
+
+  127.0.0.1 - - [27/Sep/2022:09:38:00 +0900] "GET /auth HTTP/1.1" 200 948 "-" "curl/7.68.0" profile email group2 nginx3 user nginx3@example.com nginx-plus slow_group
+  127.0.0.1 - - [27/Sep/2022:09:38:07 +0900] "GET /auth HTTP/1.1" 503 197 "-" "curl/7.68.0" profile email nginx1 user nginx1@example.com nginx-plus default_group
+
+- JWTを利用した接続ログを確認すると、Curlコマンドの接続結果と同様となっています。
+- 1回目 ``nginx3`` を含むリクエストのHTTPレスポンスコードが ``200`` 、2回目 ``nginx1`` を含むリクエストのHTTPレスポンスコードが ``503`` であることがわかります。
+- 1回目の接続は、$jwt_claim_scope ``profile email group2`` $jwt_claim_sub が ``nginx-plus`` 、 $jwt_upstream が ``slow_group`` となっています
+- 2回目の接続は、$jwt_claim_scope ``profile email`` $jwt_claim_sub が ``nginx-plus`` 、 $jwt_upstream が ``default_group`` となっています
+- 1回目の接続では、$jwt_upstream に ``group2`` が含まれているため、適切に $jwt_upstream が ``slow_group`` となっています
+- 2回目の接続では、$jwt_upstream に ``group2`` が含まれていないため、適切に $jwt_upstream が ``default_group`` となっています
+- 1回目と2回目の接続の、 $jwt_claim_sub は双方 ``nginx-plus`` となっています。この値がRateLimitのKeyとなっているため、連続2回の通信で2回めの ``nginx1`` がRateLimitで拒否されています
+
+Errorログを確認します
+
+.. code-block:: cmdin
+
+  grep 1rpm_per_client /var/log/nginx/error.log
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+ 
+  2022/09/27 09:38:07 [error] 1845#1845: *17 limiting requests, excess: 0.886 by zone "1rpm_per_client", client: 127.0.0.1, server: , request: "GET /auth HTTP/1.1", host: "localhost"
+
+2回目の接続が ``1rpm_per_client`` で Request Limit のルールに該当したことがわかります
+
 
 4. OIDCによる通信制御
 ====
