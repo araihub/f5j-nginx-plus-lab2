@@ -1175,8 +1175,7 @@ JWTに含まれる情報を用いて、通信を制御する動作を確認し�
   }
 
 - 1行目で ``$jwt_claim_sub`` をKeyとした、Request Limitを設定し、36行目で、 ``/auth`` のPATHに適用します
-- | 8-12行目で、 ``map`` Directiveを使用し、 ``$jwt_claim_scope`` に含まれる値に応じて ``$jwt_upstream`` という変数の値を選択するよう記述します。
-  | group1 , group2 の場合には、 応答の遅いUpstreamを想定し ``slow_group`` 、 通常は ``default_group`` に転送する動作となります
+- 8-12行目で、 ``map`` Directiveを使用し、 ``$jwt_claim_scope`` に含まれる値に応じて ``$jwt_upstream`` という変数の値を選択するよう記述します。group1 , group2 の場合には、 応答の遅いUpstreamを想定し ``slow_group`` 、 通常は ``default_group`` に転送する動作となります
 - 29行目、37行目で転送先を指定しますが、宛先Upstreamの名称に ``$jwt_upstream`` を指定します
 
 設定を反映します
@@ -1199,7 +1198,6 @@ JWTに含まれる情報を用いて、通信を制御する動作を確認し�
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1
 
   [
     [
@@ -1232,7 +1230,7 @@ JWTに含まれる情報を用いて、通信を制御する動作を確認し�
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1
+  :emphasize-lines: 2,4
 
   <html>
   <head><title>503 Service Temporarily Unavailable</title></head>
@@ -1254,15 +1252,14 @@ JWTに含まれる情報を用いて、通信を制御する動作を確認し�
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1
 
   127.0.0.1 - - [27/Sep/2022:09:38:00 +0900] "GET /auth HTTP/1.1" 200 948 "-" "curl/7.68.0" profile email group2 nginx3 user nginx3@example.com nginx-plus slow_group
   127.0.0.1 - - [27/Sep/2022:09:38:07 +0900] "GET /auth HTTP/1.1" 503 197 "-" "curl/7.68.0" profile email nginx1 user nginx1@example.com nginx-plus default_group
 
 - JWTを利用した接続ログを確認すると、Curlコマンドの接続結果と同様となっています。
 - 1回目 ``nginx3`` を含むリクエストのHTTPレスポンスコードが ``200`` 、2回目 ``nginx1`` を含むリクエストのHTTPレスポンスコードが ``503`` であることがわかります。
-- 1回目の接続は、$jwt_claim_scope ``profile email group2`` $jwt_claim_sub が ``nginx-plus`` 、 $jwt_upstream が ``slow_group`` となっています
-- 2回目の接続は、$jwt_claim_scope ``profile email`` $jwt_claim_sub が ``nginx-plus`` 、 $jwt_upstream が ``default_group`` となっています
+- 1回目の接続は、$jwt_claim_scope ``profile email group2`` 、 $jwt_claim_sub が ``nginx-plus`` 、 $jwt_upstream が ``slow_group`` となっています
+- 2回目の接続は、$jwt_claim_scope ``profile email`` 、$jwt_claim_sub が ``nginx-plus`` 、 $jwt_upstream が ``default_group`` となっています
 - 1回目の接続では、$jwt_upstream に ``group2`` が含まれているため、適切に $jwt_upstream が ``slow_group`` となっています
 - 2回目の接続では、$jwt_upstream に ``group2`` が含まれていないため、適切に $jwt_upstream が ``default_group`` となっています
 - 1回目と2回目の接続の、 $jwt_claim_sub は双方 ``nginx-plus`` となっています。この値がRateLimitのKeyとなっているため、連続2回の通信で2回めの ``nginx1`` がRateLimitで拒否されています
