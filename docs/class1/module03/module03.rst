@@ -1282,8 +1282,270 @@ Errorログを確認します
 4. OIDCによる通信制御
 ====
 
+OIDCのRPとしてNGINXを動作させる方法を説明します
+
+KeyCloakの設定
+----
+
+Identity Provider として利用する Keycloakの設定を行います
+
+
+| ブラウザからKeyCloakにアクセスし、設定を行います。
+| Chromeを開き、 `https://10.1.1.5:8443 <https://10.1.1.5:8443>`__ へアクセスしてください。
+
+   .. image:: ./media/keycloak_top.jpg
+      :width: 500
+
+**Administration Console** を開きます。ログイン画面が表示されますので以下の情報でログインしてください。
+
+* ログイン情報
+=========== ============
+**usename** **password**  
+=========== ============
+admin       admin
+=========== ============
+
+  .. image:: ./media/keycloak_login.jpg
+     :width: 500
+
+左メニューより **Clients** を開き、 **Create** から新規作成を行います。
+
+  .. image:: ./media/keycloak_clients.jpg
+     :width: 500
+
+Client ID: ``nginx-plus`` を指定し、 **Save** します。
+
+  .. image:: ./media/keycloak_clients_new.jpg
+     :width: 500
+
+SettingsタブのAccess Type: ``confidential`` を選択し、Valid Redirect URIs: `http://10.1.1.7:80/_codexch <http://10.1.1.7:80/_codexch>`__ を入力し、 **Save** します。
+
+  .. image:: ./media/keycloak_clients_setting.jpg
+     :width: 500
+
+Credentialsタブを開きます。後ほどSecretの値を利用しますので表示されている文字列を記録しておきます。
+
+  .. image:: ./media/keycloak_clients_secret.jpg
+     :width: 500
+
+Rolesタブを開き、 **Add Role** から追加を行います。
+
+  .. image:: ./media/keycloak_clients_role.jpg
+     :width: 500
+
+Role Name: ``nginx-keycloak-role`` を指定し、 **Save** します。
+
+  .. image:: ./media/keycloak_clients_role2.jpg
+     :width: 500
+
+左メニュー **Users** を開き、 **Add user** からユーザの新規作成を行います。
+
+  .. image:: ./media/keycloak_clients_users.jpg
+     :width: 500
+
+Username: ``nginx-user`` を指定し、 **Save** します。
+
+  .. image:: ./media/keycloak_clients_users_new.jpg
+     :width: 500
+
+Credentialsタブを開き、Password: ``test`` を入力、Temporary: ``Off`` を選択し、nginx-userのパスワードを設定します。
+
+  .. image:: ./media/keycloak_clients_users_pass.jpg
+     :width: 500
+
+Role Mappingsタブを開き、Client Roles: ``nginx-plus`` を選択し、Available Rolesに表示される ``nginx-keycloak-role`` を選択し、 **Add selected** でRoleをAssignします。
+
+  .. image:: ./media/keycloak_clients_users_role_mapping.jpg
+     :width: 500
+
+これでKeycloakの準備は完了しました。
+
+
 設定
 ----
 
+NGINXの設定を行います
+
+NGINX で OIDCの制御を行うため、NJSモジュールを利用します。
+以下コマンドでNJSモジュールをインストールします。
+
+.. code-block:: cmdin
+
+  sudo apt install nginx-plus-module-njs
+
+NJSモジュールがインストールされたことを確認します
+
+.. code-block:: cmdin
+
+  dpkg -l  | grep nginx-plus-module-njs
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+
+  ii  nginx-plus-module-njs              27+0.7.7-1~focal                      amd64        NGINX Plus njs dynamic modules
+
+必要となるファイルを取得します。
+
+.. code-block:: cmdin
+
+  cd ~/
+  git clone https://github.com/nginxinc/nginx-openid-connect.git
+
+取得したGitリポジトリに、OIDCに必要となる情報を取得し、ファイルを生成するスクリプトが保存されています。以下コマンドで、KeyCloakから必要となる情報を取得します
+
+.. code-block:: cmdin
+
+  cd ~/nginx-openid-connect
+  ./configure.sh http://10.1.1.5:8081/auth/realms/master/.well-known/openid-configuration
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+
+  configure.sh: NOTICE: Downloading ./idp_jwk.json
+  configure.sh: NOTICE: Configuring ./frontend.conf ... no change
+  configure.sh: NOTICE: Configuring ./openid_connect_configuration.conf
+  configure.sh: NOTICE:  - $oidc_authz_endpoint ... ok
+  configure.sh: NOTICE:  - $oidc_token_endpoint ... ok
+  configure.sh: NOTICE:  - $oidc_jwt_keyfile ... ok
+  configure.sh: NOTICE:  - $oidc_hmac_key ... ok
+  configure.sh: NOTICE:  - $oidc_pkce_enable ... ok
+  configure.sh: NOTICE: Success - test configuration with 'nginx -t'
+
+NJSモジュールを有効にするため ``load_modules`` ディレクティブを ``nginx.conf`` に追加します
+
+.. code-block:: cmdin
+
+  sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf-bak
+  cat ~/f5j-nginx-plus-lab2-conf/lab/oidc-loadmodule.conf /etc/nginx/nginx.conf-bak > ~/nginx.conf
+  sudo cp ~/nginx.conf /etc/nginx/nginx.conf
+
+追加した結果を確認します。正しくNJSモジュールを読み込む設定が記述されていることを確認します
+
+.. code-block:: cmdin
+
+  head -3 /etc/nginx/nginx.conf
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+
+  # for NJS
+  load_module modules/ngx_http_js_module.so;
+  load_module modules/ngx_stream_js_module.so;
+
+設定ファイルを一部変更します。 ``<Client Secret>`` の情報は先程KeyCloakの設定画面で確認した文字列を入力してコマンドを実行してください
+
+.. code-block:: cmdin
+
+  sed -i -e 's/my-client-id/nginx-plus/g' ~/nginx-openid-connect/openid_connect_configuration.conf
+  sed -i -e 's/my-client-secret/<Client Secret>/g' ~/nginx-openid-connect/openid_connect_configuration.conf
+
+
+設定内容を確認します
+
+.. code-block:: cmdin
+
+  cat ~/f5j-nginx-plus-lab2-conf/lab/oidc-front.conf
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 4,14,20-21,24,27
+
+  # This is the backend application we are protecting with OpenID Connect
+  upstream my_backend {
+      zone my_backend 64k;
+      server backend1:81;
+  }
+  
+  # Custom log format to include the 'sub' claim in the REMOTE_USER field
+  log_format main_jwt '$remote_addr - $jwt_claim_sub [$time_local] "$request" $status '
+                      '$body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"';
+  
+  # The frontend server - reverse proxy with OpenID Connect authentication
+  #
+  server {
+      include conf.d/openid_connect.server_conf; # Authorization code flow and Relying Party processing
+      error_log /var/log/nginx/error.log debug;  # Reduce severity level as required
+  
+      listen 80; # Use SSL/TLS in production
+  
+      location / {
+          proxy_hide_header "Content-Type";
+          add_header 'Content-Type' 'text/html';
+  
+          # This site is protected with OpenID Connect
+          auth_jwt "" token=$session_jwt;
+          error_page 401 = @do_oidc_flow;
+  
+          auth_jwt_key_file $oidc_jwt_keyfile; # Enable when using filename
+          #auth_jwt_key_request /_jwks_uri; # Enable when using URL
+  
+          # Successfully authenticated users are proxied to the backend,
+          # with 'sub' claim passed as HTTP header
+          proxy_set_header username $jwt_claim_sub;
+          proxy_pass http://my_backend; # The backend site/app
+  
+          access_log /var/log/nginx/access.log main_jwt;
+      }
+  }
+
+- 4行目で、転送先サーバを指定します
+- ラボ環境で、応答データの ``Content-Type`` を ``text/html`` とするため、20-21行目のように設定します
+- 14行目で、OIDCに必要となる各種Pathを指定した別の設定ファイルを読み込みます
+- 24,27行目で、OIDCのフローに従って正しくJWT Tokenを取得したクライアントのアクセスを評価します
+
+必要となるファイルをコピーします。 OIDCのGitHub上にサンプルとなるfrontend.confがありますが、代わりに予め作成した別のコンフィグをコピーします。
+設定を反映します
+
+.. code-block:: cmdin
+
+  sudo cp ~/nginx-openid-connect/idp_jwk.json /etc/nginx/conf.d/
+  sudo cp ~/nginx-openid-connect/openid_connect_configuration.conf /etc/nginx/conf.d/
+  sudo cp ~/nginx-openid-connect/openid_connect.server_conf /etc/nginx/conf.d/
+  sudo cp ~/nginx-openid-connect/openid_connect.js /etc/nginx/conf.d/
+  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/oidc-front.conf /etc/nginx/conf.d/default.conf
+  sudo nginx -s reload
+
 動作確認
 ----
+
+Chromeブラウザを開き、 ``Secret Tab (New Incognito Window)`` を開いてください。
+
+  .. image:: ./media/chrome_secret_tab.jpg
+     :width: 500
+
+`http://10.1.1.7 <http://10.1.1.7>`__ へアクセスしてください。
+
+  .. image:: ./media/chrome_tcp80.jpg
+     :width: 500
+
+Keycloakのログイン画面が表示されます。先程設定を行った ``nginx-user`` でログインしてください。
+
+* ログイン情報
+=========== ============
+**usename** **password**  
+=========== ============
+nginx-user  test
+=========== ============
+
+  .. image:: ./media/chrome_tcp80_keycloak_login.jpg
+     :width: 500
+
+ログインが正常に行われた場合、Webアプリケーションの結果をブラウザで確認いただけます。
+
+  .. image:: ./media/chrome_tcp80_logined.jpg
+     :width: 500
+
+不要ファイル削除
+----
+
+その他項目で不要となるファイルを削除します
+
+.. code-block:: cmdin
+
+  sudo mv /etc/nginx/nginx.conf-bak　/etc/nginx/nginx.conf 
+  sudo rm /etc/nginx/conf.d/openid_connect_configuration.conf
+
