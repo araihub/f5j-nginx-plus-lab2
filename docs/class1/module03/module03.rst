@@ -1546,6 +1546,6 @@ nginx-user  test
 
 .. code-block:: cmdin
 
-  sudo mv /etc/nginx/nginx.conf-bak　/etc/nginx/nginx.conf 
+  sudo mv /etc/nginx/nginx.conf-bak /etc/nginx/nginx.conf 
   sudo rm /etc/nginx/conf.d/openid_connect_configuration.conf
 
