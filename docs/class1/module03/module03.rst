@@ -1291,7 +1291,7 @@ Identity Provider として利用する Keycloakの設定を行います
 
 
 | ブラウザからKeyCloakにアクセスし、設定を行います。
-| Chromeを開き、 `https://10.1.1.5:8443 <https://10.1.1.5:8443>`__ へアクセスしてください。
+| Chromeを開き、 `http://10.1.1.5:8081/ <http://10.1.1.5:8081/>`__ へアクセスしてください。
 
    .. image:: ./media/keycloak_top.jpg
       :width: 500

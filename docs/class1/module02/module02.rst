@@ -175,7 +175,7 @@ Access Log の内容を確認します
 NGINX Plus Dashboardの内容は以下のように表示されます
 
 .. image:: ./media/nginx-ratelimit1.jpg
-   :width: 400
+   :width: 500
 
 - Location Zone の表より ``5xx`` が ``2`` となっていることがわかります
 - Limit Req のグラフより ``Passed`` が ``1`` 、 ``Rejected`` が ``2`` となっていることがわかります
@@ -313,7 +313,7 @@ Access Log の内容を確認します
 NGINX Plus Dashboardの内容は以下のように表示されます
 
 .. image:: ./media/nginx-ratelimit2.jpg
-   :width: 400
+   :width: 500
 
 - Location Zone の表より ``5xx`` が ``1`` となっていることがわかります
 - Limit Req のグラフより ``Passed`` が ``3`` 、 ``Rejected`` が ``1`` となっていることがわかります
@@ -452,7 +452,7 @@ Access Log の内容を確認します
 NGINX Plus Dashboardの内容は以下のように表示されます
 
 .. image:: ./media/nginx-ratelimit3.jpg
-   :width: 400
+   :width: 500
 
 - Location Zone の表より ``5xx`` に該当はなく ``2xx`` が ``4`` となっていることがわかります
 - Limit Req のグラフより ``Passed`` が ``3`` 、 ``Rejected (dry_run)`` が ``1`` となっていることがわかります
@@ -588,7 +588,7 @@ Access Log の内容を確認します
 NGINX Plus Dashboardの内容は以下のように表示されます
 
 .. image:: ./media/nginx-connlimit1.jpg
-   :width: 400
+   :width: 500
 
 - Location Zone の表より ``5xx`` が ``1`` となっていることがわかります
 - Limit Req のグラフより ``Passed`` が ``1`` 、 ``Rejected`` が ``1`` となっていることがわかります
@@ -684,7 +684,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 NGINX Plus Dashboardの内容は以下のように表示されます
 
 .. image:: ./media/nginx-lb1-rr.jpg
-   :width: 400
+   :width: 500
 
 - ``Server`` の列に、ポート番号 ``81`` 、 ``82`` 、 ``83`` の3つが宛先として表示されています
 - ``Requests`` の列を見ると、各 ``2`` となっており、均一に分散されていることが確認できます
@@ -773,7 +773,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 NGINX Plus Dashboardの内容は以下のように表示されます
 
 .. image:: ./media/nginx-lb2-ip_hash.jpg
-   :width: 400
+   :width: 500
 
 - ``Server`` の列に、ポート番号 ``81`` 、 ``82``  の2つが宛先として表示されています
 - すべてポート番号 ``81`` の宛先に転送されており、 ``Requests`` の列を見ると ``6`` となっています
@@ -875,7 +875,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 NGINX Plus Dashboardの内容は以下のように表示されます
 
 .. image:: ./media/nginx-lb3-hash.jpg
-   :width: 400
+   :width: 500
 
 分散結果がコマンドの出力結果と一致することを確認してください
 
@@ -963,7 +963,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 NGINX Plus Dashboardの内容は以下のように表示されます
 
 .. image:: ./media/nginx-lb4-least_time.jpg
-   :width: 400
+   :width: 500
 
 - ``Server`` の列に、ポート番号 ``81`` 、 ``82`` 、 ``83`` の3つが宛先として表示されています
 - ``Requests`` の列を見ると、上から ``3`` 、 ``2`` 、 ``1`` となっています
@@ -1040,7 +1040,7 @@ NGINX Plus Dashboardの内容は以下のように表示されます
 | 画面上部 ``HTTP Upstreams`` のタブを選択してください。
 
 .. image:: ./media/nginx-active-hc1.jpg
-   :width: 400
+   :width: 500
 
 - 4つのホストが表示されていることがわかります
 - Active Health Check が行われるため、 ``Health monitors`` の列が、通信を行っていない状態でもカウントアップすることが確認できます
@@ -1302,7 +1302,7 @@ NGINXのresolver設定で指定したDNSサーバで名前を解決し、サー�
 NGINX Plus Dashboardの内容は以下のように表示されます
 
 .. image:: ./media/nginx-dnsdiscovery-4hosts.jpg
-   :width: 400
+   :width: 500
 
 
 - DNSサーバで応答する内容の変更
@@ -1341,7 +1341,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
 NGINXのDNSを利用したサービスディスカバリの結果、 ``api1`` で指定したホストが2つに変化することを確認してください。
 
 .. image:: ./media/nginx-dnsdiscovery-2hosts.jpg
-   :width: 400
+   :width: 500
 
 ``docker_host`` で以下コマンドを実行すると、 ``api1`` として元の4つのホストが表示されます
 
