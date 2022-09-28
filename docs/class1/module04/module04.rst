@@ -12,17 +12,17 @@ NGINX Install
 Windows Jump Hostへログインいただくと、SSHClientのショートカットがありますので、そちらをダブルクリックし
 ``ubuntu02`` へ接続ください
 
-   - .. image:: ./media/putty_icon.jpg
+   - .. image:: ../module01/media/putty_icon.jpg
       :width: 50
 
-   - .. image:: ./media/putty_menu.jpg
+   - .. image:: ../module01/media/putty_menu.jpg
       :width: 200
 
 | 以下のページの内容を参考にNGINX Plus及びモジュールをインストールします
 | `NGINX Plus Lab 1. NGINX Plusのインストール (15min) <https://f5j-nginx-plus-lab1.readthedocs.io/en/latest/class1/module2/module2.html#nginx-plus-15min>`__
 
 1. 冗長構成
-----
+====
 
 .. image:: ./media/nginx-ha-slide.jpg
    :width: 500
@@ -32,7 +32,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
 - `High Availability Support for NGINX Plus in On-Premises Deployments <https://docs.nginx.com/nginx/admin-guide/high-availability/ha-keepalived/>`__
 
 モジュールのインストール
-~~~~
+----
 
 ``ubuntu01`` 、 ``ubuntu02`` の双方で以下のモジュールをインストールしてください
 
@@ -54,7 +54,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
   ii  nginx-sync                         1.1                                   all          nginx configs synchronization script
 
 スクリプトを用いた初期設定
-~~~~
+----
 
 双方のホストで ``nginx-ha-setup`` コマンドを利用しセットアップを行います。実行するホストに注意してください
 
@@ -253,7 +253,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
   Thank you for using NGINX Plus!
 
 確認
-~~~~
+----
 
 keepalived の 設定ファイルの内容を確認します。双方のホストで実行した結果を確認します
 
@@ -264,7 +264,7 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 18,38,19,20,26,28,31
+  :emphasize-lines: 19,20,26,28,31
 
   ## ubuntu01 の出力結果
   global_defs {
@@ -313,7 +313,7 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 18,38,19,20,26,28,31
+  :emphasize-lines: 19,20,26,28,31
 
   ## ubuntu02 の出力結果
   global_defs {
@@ -412,7 +412,7 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
 VRRPにより、冗長構成が動作していることが確認できます
 
 2. 設定同期
-----
+====
 
 .. image:: ./media/nginx-ha-configsync-slide.jpg
    :width: 500
@@ -422,7 +422,7 @@ VRRPにより、冗長構成が動作していることが確認できます
 - `Synchronizing NGINX Configuration in a Cluster <https://docs.nginx.com/nginx/admin-guide/high-availability/configuration-sharing/>`__
 
 設定
-~~~~
+----
 
 設定の同期は、ある指定のホストからその他ホスト(郡)へ同期する機能となります。
 ``ubuntu01`` から ``ubuntu02`` に同期する設定を行います。
@@ -436,7 +436,7 @@ VRRPにより、冗長構成が動作していることが確認できます
 
   # 不要な設定を削除
   sudo rm -rf /etc/nginx/conf.d/*
-  
+
   # 同期の対象となる設定ファイルをコピー＆反映
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/ha-demo.conf /etc/nginx/conf.d/default.conf
   sudo touch /etc/nginx/conf.d/dummy.conf
@@ -518,7 +518,7 @@ VRRPにより、冗長構成が動作していることが確認できます
 
 
 3. 動作確認
-----
+====
 
 疎通を確認します
 
@@ -559,7 +559,7 @@ Failover の結果を確認します
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 3,9-12
+  :emphasize-lines: 3,9-13
 
   ● keepalived.service - LVS and VRRP High Availability Monitor
        Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabled)
@@ -622,7 +622,7 @@ keepalived が停止したためステータスが更新されず ``MASTER`` の
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 3,20
+  :emphasize-lines: 3,21
 
   ● keepalived.service - LVS and VRRP High Availability Monitor
        Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabled)
@@ -646,7 +646,7 @@ keepalived が停止したためステータスが更新されず ``MASTER`` の
   Sep 28 19:09:07 ip-10-1-1-6 nginx-ha-keepalived[15482]: Transition to state 'BACKUP' on VRRP instance 'VI_1'.
   Sep 28 20:14:04 ip-10-1-1-6 Keepalived_vrrp[15172]: (VI_1) Entering MASTER STATE
 
-20行目で ``MASTER`` となっていることが確認できます
+21行目で ``MASTER`` となっていることが確認できます
 
 .. code-block:: cmdin
 
@@ -713,7 +713,7 @@ Failover の結果を確認します
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 3,20
+  :emphasize-lines: 3,23
 
   ● keepalived.service - LVS and VRRP High Availability Monitor
        Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabled)
@@ -749,6 +749,7 @@ Failover の結果を確認します
 
   $ cat /var/run/nginx-ha-keepalived.state
   STATE=MASTER
+  
   $ ip addr show ens5
   2: ens5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc mq state UP group default qlen 1000
       link/ether 0a:2d:6d:00:fb:c5 brd ff:ff:ff:ff:ff:ff
@@ -762,7 +763,7 @@ Failover の結果を確認します
 
 
 4. その他冗長構成
-----
+====
 
 その他冗長構成に関する要件については以下の記事を参照してください
 
