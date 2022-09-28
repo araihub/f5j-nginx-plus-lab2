@@ -899,7 +899,7 @@ PATH ``/auth`` に対し、JWTを含まないリクエストを送信し、動�
 
 .. code-block:: cmdin
 
-  curl -v localhost/auth -H "Authorization: Bearer `cat jwt/nginx1.jwt`"
+  curl -v localhost/auth -H "Authorization: Bearer `cat ~/f5j-nginx-plus-lab2-conf/jwt/nginx1.jwt`"
 
 .. code-block:: bash
   :caption: 実行結果サンプル
@@ -1001,7 +1001,7 @@ JWTは様々な情報をClaimとして保持します。それらの情報を確
 
 .. code-block:: cmdin
 
-  curl -s localhost/auth -H "Authorization: Bearer `cat jwt/nginx1.jwt`" | jq .request.headers
+  curl -s localhost/auth -H "Authorization: Bearer `cat ~/f5j-nginx-plus-lab2-conf/jwt/nginx1.jwt`" | jq .request.headers
 
 .. code-block:: bash
   :caption: 実行結果サンプル
@@ -1057,7 +1057,7 @@ JWTは様々な情報をClaimとして保持します。それらの情報を確
 
 .. code-block:: cmdin
 
-  curl -s localhost/auth -H "Authorization: Bearer `cat jwt/nginx2.jwt`" | jq .request.headers
+  curl -s localhost/auth -H "Authorization: Bearer `cat ~/f5j-nginx-plus-lab2-conf/jwt/nginx2.jwt`" | jq .request.headers
 
 .. code-block:: bash
   :caption: 実行結果サンプル
@@ -1202,7 +1202,7 @@ JWTに含まれる情報を用いて、通信を制御する動作を確認し�
 
 .. code-block:: cmdin
 
-  curl -s localhost/auth -H "Authorization: Bearer `cat jwt/nginx3.jwt`" | jq .request.headers
+  curl -s localhost/auth -H "Authorization: Bearer `cat ~/f5j-nginx-plus-lab2-conf/jwt/nginx3.jwt`" | jq .request.headers
 
 .. code-block:: bash
   :caption: 実行結果サンプル
@@ -1234,7 +1234,7 @@ JWTに含まれる情報を用いて、通信を制御する動作を確認し�
 
 .. code-block:: cmdin
 
-  curl -s localhost/auth -H "Authorization: Bearer `cat jwt/nginx1.jwt`"
+  curl -s localhost/auth -H "Authorization: Bearer `cat ~/f5j-nginx-plus-lab2-conf/jwt/nginx1.jwt`"
 
 .. code-block:: bash
   :caption: 実行結果サンプル
