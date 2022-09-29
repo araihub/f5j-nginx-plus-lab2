@@ -369,7 +369,7 @@ KeyValue Storeのステータス動機を確認します
 その後、新たにエントリの追加(または削除)を行った際に、全体の数の値が変更となります
 
 
-4. APIを使ったKeyvalの操作
+4. APIを使ったKeyValの操作
 ====
 
 KeyValの機能は、NGINX Plus APIを使って外部から操作することが可能です。
@@ -394,7 +394,7 @@ KeyValの機能は、NGINX Plus APIを使って外部から操作することが
      "user4":"10.0.0.4" 
   }'
 
-KeyVal状態を確認します
+KeyValの状態を確認します
 
 .. code-block:: cmdin
 
@@ -422,7 +422,7 @@ KeyVal状態を確認します
 
   curl -s 127.0.0.1:8888/api/8/http/keyvals/iplist -X PATCH -d '{ "user1":"192.168.0.1" }'
 
-KeyVal状態を確認します
+KeyValの状態を確認します
 
 .. code-block:: cmdin
 
@@ -450,7 +450,7 @@ KeyVal状態を確認します
 
   curl -s 127.0.0.1:8888/api/8/http/keyvals/iplist -X PATCH -d '{ "user1":null }'
 
-KeyVal状態を確認します
+KeyValの状態を確認します
 
 .. code-block:: cmdin
 
@@ -478,7 +478,7 @@ KeyVal状態を確認します
 
   curl -s 127.0.0.1:8888/api/8/http/keyvals/iplist -X DELETE 
 
-KeyVal状態を確認します
+KeyValの状態を確認します
 
 .. code-block:: cmdin
 
