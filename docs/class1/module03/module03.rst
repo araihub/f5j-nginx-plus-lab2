@@ -252,6 +252,7 @@ SSLを終端する際に利用するサーバ証明書を作成します
 
 .. code-block:: cmdin
 
+  sudo cp -r ~/f5j-nginx-plus-lab2-conf/ssl /etc/nginx/conf.d/
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/mtls1.conf /etc/nginx/conf.d/default.conf
   sudo nginx -s reload
 
@@ -262,6 +263,7 @@ SSLを終端する際に利用するサーバ証明書を作成します
 
 .. code-block:: cmdin
 
+  # cd ~/f5j-nginx-plus-lab2-conf/ssl
   curl -v --cacert ./CA.pem https://webapp.example.com --resolve webapp.example.com:443:127.0.0.1
 
 .. code-block:: bash
