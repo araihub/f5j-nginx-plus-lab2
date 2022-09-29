@@ -177,7 +177,7 @@ Tips3. DNSコンテンツサーバのデプロイ
 
 .. code-block:: cmdin
 
-  docker-compose -f docker-compose2.yaml up -d
+  docker-compose -f docker-compose.yaml up -d
 
 - ``docker-compose.yaml`` 
 
@@ -234,7 +234,7 @@ Tips3. KeyCloakのデプロイ
 
 .. code-block:: cmdin
 
-  docker-compose -f docker-compose2.yaml up -d
+  docker-compose -f docker-compose.yaml up -d
 
 - ``docker-compose.yaml``
 
