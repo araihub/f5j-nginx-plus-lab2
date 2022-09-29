@@ -1177,6 +1177,7 @@ Health Checkはこれらの文字列ステータスをもとに、サーバの�
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
+  :emphasize-lines: 3
 
   upstream server_group {
       zone backend 64k;
