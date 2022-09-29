@@ -225,7 +225,7 @@ Tips3. DNSコンテンツサーバのデプロイ
   10.1.1.83 api1
   10.1.1.84 api1
 
-Tips3. KeyCloakのデプロイ
+Tips4. Keycloakのデプロイ
 ====
 
 - Docker Compose の実行
