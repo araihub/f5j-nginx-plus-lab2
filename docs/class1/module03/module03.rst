@@ -813,6 +813,86 @@ NGINX Plus は JWT の検証が可能です。またJWT Claimにアクセスし�
 1. JWT Validation
 ----
 
+
+利用するJWTを確認
+~~~~
+
+利用するファイルの内容を確認します
+
+JWK(Json Web Key)の内容を確認します
+
+
+出力結果が以下となります。
+
+.. code-block:: cmdin
+
+  cat ~/f5j-nginx-plus-lab2-conf/jwt/api_secret.jwk
+
+.. code-block:: json
+  :linenos:
+  :caption: jwk を base64 デコードした結果
+  :emphasize-lines: 3
+
+  {"keys":
+      [{
+          "k":"ZmFudGFzdGljand0",
+          "kty":"oct",
+          "kid":"0001"
+      }]
+  }
+
+
+各パラメータ内容は以下の通り
+
+.. list-table::
+    :widths: 2 6 2 
+    :header-rows: 1
+    :stub-columns: 1
+
+    * - **Parameter**
+      - **意味**
+      - **Link**
+    * - k
+      - k (key value) パラメータは, kty octで利用する base64url encodeされたKey文字列をもつ
+      - `JSON Web Algorithms (JWA) 6.4.1 "k" <https://www.rfc-editor.org/rfc/rfc7518.txt>`__
+    * - kty
+      - kty (key type) パラメータは, RSA や EC といった暗号アルゴリズムファミリーを示す
+      - `JSON Web Key (JWK) 4.1 "kty" <https://openid-foundation-japan.github.io/rfc7517.ja.html#ktyDef>`__
+    * - kid
+      - kid (key ID) パラメータは特定の鍵を識別するために用いられる
+      - `JSON Web Key (JWK) 4.5 "kid" <https://openid-foundation-japan.github.io/rfc7517.ja.html#kidDef>`__
+
+
+kty "oct" で利用する Keyの内容をBase64デコードした結果は以下の通り
+
+.. code-block:: cmdin
+
+  echo -n "ZmFudGFzdGljand0" | base64 -d
+
+.. code-block:: bash
+  :linenos:
+  :caption: 実行結果サンプル
+
+  fantasticjwt
+
+この結果により、このサンプルでは ``fantasticjwt`` という文字列がKeyとして使用されていることが確認できます。
+
+今回サンプルリクエストに利用するJWTがこの文字列で署名されたものであるか確認します。 
+``~/f5j-nginx-plus-lab2-conf/jwt/nginx1.jwt`` の内容を表示します。
+
+| `JWT.io <https://jwt.io/>`__ を開き、 **Algorithm** が ``HS256`` であることを確認します。
+| **VERIFY SIGNATURE** 欄の ``your-256-bit-secret`` に先程 ``jwk`` の内容をデコードして確認した文字列 ``fantasticjwt`` を入力してください。
+| 画面左側 **Eocoded** 欄に、 ``nginx1.jwt`` の内容を貼り付け、左下の表示が ``Signature Verified`` となることを確認してください。
+| この結果より、クライアントリクエストで利用するJWTは、検証可能なものであることが確認できます。またこのJWTに含まれる情報が右側に表示されますので合わせて確認ください。
+
+   .. image:: ./media/jwtio_verify.jpg
+      :width: 500
+
+その他、NGINX Plus / JWT に関する詳細は 
+`Blog:Authenticating API Clients with JWT and NGINX Plus <https://www.nginx.com/blog/authenticating-api-clients-jwt-nginx-plus/>`__ 
+を参照してください
+
+
 設定
 ~~~~
 

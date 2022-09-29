@@ -492,3 +492,12 @@ KeyValの状態を確認します
     "iplist": {}
   }
 
+4. その他冗長構成
+====
+
+本番環境では、対向のホストをFQDNで指定し、mTLS・証明書認証などを実装することが考えられます。
+これらの設定について以下のページを参照してください
+
+- `Runtime State Sharing in a Cluster <https://docs.nginx.com/nginx/admin-guide/high-availability/zone_sync/>`__
+
+

@@ -245,6 +245,7 @@ Tips3. KeyCloakのデプロイ
   version: '3'
   services:
     keycloak:
+      restart: always
       image: quay.io/keycloak/keycloak:15.0.2
       ports:
         - 8443:8443
