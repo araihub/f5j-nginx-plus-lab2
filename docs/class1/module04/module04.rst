@@ -437,7 +437,8 @@ VRRPにより、冗長構成が動作していることが確認できます
   # 不要な設定を削除
   sudo rm -rf /etc/nginx/conf.d/*
 
-  # 同期の対象となる設定ファイルをコピー＆反映
+  # 必要な設定ファイルをコピー＆反映
+  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/api.conf /etc/nginx/conf.d/
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/ha-demo.conf /etc/nginx/conf.d/default.conf
   sudo touch /etc/nginx/conf.d/dummy.conf
   sudo nginx -s reload
@@ -769,4 +770,5 @@ Failover の結果を確認します
 
 - `Dual-Stack Configuration of IPv4 and IPv6 <https://docs.nginx.com/nginx/admin-guide/high-availability/ha-keepalived/#dual-stack-configuration-of-ipv4-and-ipv6>`__
 - `Active-Active High Availability <https://docs.nginx.com/nginx/admin-guide/high-availability/ha-keepalived-nodes/>`__
+
 

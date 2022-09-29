@@ -28,7 +28,7 @@ NGINX Plus の設定
 
 .. code-block:: cmdin
 
-  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/api.conf .
+  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/api.conf /etc/nginx/conf.d/
   sudo nginx -s reload
 
 F5ラボ環境を利用の場合、以下のどちらかの手段で接続してください
