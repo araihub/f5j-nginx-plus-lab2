@@ -1,7 +1,71 @@
 補足情報
 ####
 
-Tips1. OpenSSL CA(認証局) の設定
+Tips1. サンプルアプリケーションとして動作するNGINXの設定
+====
+
+以下がサンプルアプリケーションの参考設定となります。
+Luaスクリプトモジュールを導入したNGINXで実行してください。
+
+- ``/etc/nginx/conf.d/default.conf`` 
+
+.. code-block:: bash
+  :caption: Version情報
+  :linenos:
+
+  # /etc/nginx/conf.d/default.conf
+  server {
+      listen       80 default_server;
+      server_name  localhost;
+  
+      #charset koi8-r;
+      #access_log  /var/log/nginx/host.access.log  main;
+  
+      location / {
+          root   /usr/share/nginx/html;
+          index  index.html index.htm;
+      }
+  
+      error_page   500 502 503 504  /50x.html;
+      location = /50x.html {
+          root   /usr/share/nginx/html;
+      }
+  
+  }
+  ### this is for back to basic part2
+  server {
+      listen 81;
+      listen 82;
+      return 200 "{ \"request_uri\": \"$request_uri\",\"server_addr\":\"$server_addr\",\"server_port\":\"$server_port\"}";
+  }
+  server {
+      listen 83;
+      location / {
+          content_by_lua_block {
+              ngx.sleep(1)
+              ngx.print("{ \"request_uri\": \""..ngx.var.request_uri.."\",\"server_addr\":\""..ngx.var.server_addr.."\",\"server_port\":\""..ngx.var.server_port.."\"}")
+          }
+      }
+  }
+  server {
+      listen 84;
+      location / {
+          return 500 "Server Error";
+      }
+  }
+  
+  server {
+      listen 443 ssl;
+      ssl_certificate_key conf.d/ssl/nginx-ecc-p256.key;
+      ssl_certificate conf.d/ssl/nginx-ecc-p256.pem;
+      return 200 "{ \"request_uri\": \"$request_uri\",\"server_addr\":\"$server_addr\",\"server_port\":\"$server_port\"}";
+  }
+
+
+- ``/etc/nginx/conf.d/ssl`` に ``証明書(nginx-ecc-p256.pem)`` 、 ``鍵(nginx-ecc-p256.key)`` を配置します
+
+
+Tips2. OpenSSL CA(認証局) の設定
 ====
 
 ホストのVersion情報は以下の通り
@@ -44,10 +108,10 @@ Tips1. OpenSSL CA(認証局) の設定
 
 .. code-block:: cmdin
 
-  vi ~/openssl.cnf
+  vi openssl.cnf
 
 .. code-block:: bash
-  :caption: 実行結果サンプル
+  :caption: oepnssl.cnf 記述差分
   :linenos:
 
    ####################################################################
@@ -95,7 +159,6 @@ Tips1. OpenSSL CA(認証局) の設定
   +keyUsage = cRLSign, keyCertSign, nonRepudiation, digitalSignature, keyEncipherment
 
 
-
 必要となるフォルダ、ファイルの作成
 
 .. code-block:: cmdin
@@ -104,3 +167,89 @@ Tips1. OpenSSL CA(認証局) の設定
   touch index.txt
   echo 01 > serial
   echo 01 > crlnumber
+
+Tips3. DNSコンテンツサーバのデプロイ
+====
+
+- Docker Compose の実行
+
+各ファイルを同ディレクトリに配置し、以下コマンドを実行します
+
+.. code-block:: cmdin
+
+  docker-compose -f docker-compose2.yaml up -d
+
+- ``docker-compose.yaml`` 
+
+.. code-block:: bash
+  :caption: docker-compose.yaml
+  :linenos:
+
+  version: '2'
+  services:
+    dns:
+      restart: always
+      image: strm/dnsmasq
+      volumes:
+        - ./dnsmasq.conf:/etc/dnsmasq.conf
+        - ./hosts-dnsmasq:/etc/hosts-dnsmasq
+      ports:
+        - "53:53/udp"
+      cap_add:
+        - NET_ADMIN
+
+- ``/etc/dnsmasq.conf``
+
+.. code-block:: bash
+  :caption: dnsmasq.conf
+  :linenos:
+
+  port=53
+  no-hosts
+  addn-hosts=/etc/hosts-dnsmasq
+  expand-hosts
+  domain=example.com
+  domain-needed
+  bogus-priv
+
+- ``hosts-dnsmasq``
+
+.. code-block:: bash
+  :caption: hosts-dnsmasq
+  :linenos:
+
+  10.1.1.8 backend1 backend2 backend3 backend4
+  10.1.1.5 elasticsearch security-backend1 security-backend2 security-backend3 app-backend1 app-backend2 app-backend3
+  10.1.1.81 api1
+  10.1.1.82 api1
+  10.1.1.83 api1
+  10.1.1.84 api1
+
+Tips3. KeyCloakのデプロイ
+====
+
+- Docker Compose の実行
+
+各ファイルを同ディレクトリに配置し、以下コマンドを実行します
+
+.. code-block:: cmdin
+
+  docker-compose -f docker-compose2.yaml up -d
+
+- ``docker-compose.yaml``
+
+.. code-block:: bash
+  :caption: docker-compose.yaml
+  :linenos:
+
+  version: '3'
+  services:
+    keycloak:
+      image: quay.io/keycloak/keycloak:15.0.2
+      ports:
+        - 8443:8443
+        - 8081:8080
+      environment:
+        - KEYCLOAK_USER=admin
+        - KEYCLOAK_PASSWORD=admin
+
