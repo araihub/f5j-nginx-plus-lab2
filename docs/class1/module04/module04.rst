@@ -19,7 +19,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
       :width: 200
 
 | 以下のページの内容を参考にNGINX Plus及びモジュールをインストールします
-| `NGINX Plus Lab 1. NGINX Plusのインストール (15min) <https://f5j-nginx-plus-lab1.readthedocs.io/en/latest/class1/module2/module2.html#nginx-plus-15min>`__
+| `NGINX Plus Lab 1. NGINX Plusのインストール <https://f5j-nginx-plus-lab1.readthedocs.io/en/latest/class1/module2/module2.html#nginx-plus-15min>`__
 
 1. 冗長構成
 ====
