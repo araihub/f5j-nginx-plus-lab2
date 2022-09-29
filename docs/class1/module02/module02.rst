@@ -1246,7 +1246,7 @@ Health Checkはこれらの文字列ステータスをもとに、サーバの�
 
 .. code-block:: cmdin
 
-  # curl -v localhost -H "Cookie: srv_id=<初回アクセス時に取得したsrv_idの値>
+  # curl -v localhost -H "Cookie: srv_id=<初回アクセス時に取得したsrv_idの値>"
   curl -v localhost -H "Cookie: srv_id=d90714beec1b83b75b3817079340fb00"
 
 .. code-block:: bash
