@@ -1252,7 +1252,7 @@ Health Checkはこれらの文字列ステータスをもとに、サーバの�
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 7
+  :emphasize-lines: 8
 
   *   Trying 127.0.0.1:80...
   * TCP_NODELAY set
