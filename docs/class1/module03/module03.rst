@@ -1678,3 +1678,28 @@ nginx-user  test
   sudo mv /etc/nginx/nginx.conf-bak /etc/nginx/nginx.conf 
   sudo rm /etc/nginx/conf.d/openid_connect_configuration.conf
 
+その他設定に関する補足
+----
+
+IDaaSサービスと連携するなどインターネットを経由してOIDCを利用する場合、SSL/TLSの利用が必要となります。
+以下の設定を参考に、適切な認証局に署名された証明書を利用してください
+
+- IDaaSサービスで指定するリダイレクトURLとして ``https://<FQDN>/_codexch`` を指定してください
+
+- 以下設定を参考に、 ``443 ssl`` 、 適切な証明書を ``ssl_certificate / key`` で指定してください
+
+.. code-block:: bash
+  :caption: 設定サンプル
+  :linenos:
+  :emphasize-lines: 4,14,20-21,24,27
+
+  server {
+
+      listen 443 ssl;
+
+      server_name <FQDN>;
+      ssl_certificate /etc/letsencrypt/live/<FQDN>/fullchain.pem;
+      ssl_certificate_key /etc/letsencrypt/live/<FQDN>/privkey.pem;
+
+  **省略**
+
