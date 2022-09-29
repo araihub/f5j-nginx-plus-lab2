@@ -1,14 +1,14 @@
 ステータス同期
 ####
 
+ここでは、ステータス同期について紹介します。また具体的な利用サンプルとして Rate Limit、KeyValを紹介します
+
 1. ステータス同期 (Zone Synchronization)
 ====
 
 .. image:: ./media/nginx-ha-statesync-slide.jpg
    :width: 500
 
-1. ステータス同期設定
-----
 
 ステータス同期の設定を行います
 
@@ -51,12 +51,12 @@ NGINX Plus APIへ接続しステータス同期(Zone Synchronization)の状態�
 
 
 2. ratelimit
-----
+====
 
 ステータス同期ができる機能の一つである Rate Limit を設定し、動作を確認します。
 
 設定
-~~~~
+----
 
 設定を行います。
 
@@ -142,7 +142,7 @@ F5ラボ環境を利用の場合、以下のどちらかの手段で接続して
   - ご利用の端末から接続するため、 ``ubuntu01`` 、 ``ubuntu02`` の接続メニューより ``PLUS  DASHBOARD`` を選択してください
 
 動作確認
-~~~~
+----
 
 ``ubuntu01`` から、 ``ubuntu01(10.1.1.7)`` / ``ubuntu02(10.1.1.6)`` 双方に対して接続を行います。
 以下の操作を行ってください
@@ -214,12 +214,12 @@ F5ラボ環境を利用の場合、以下のどちらかの手段で接続して
 - ``Limit Req`` のグラフを見ると、 ``ubuntu02`` は通信の許可がなく ``Rejected`` されていることがわかります
 
 2. Key Value Store
-----
+====
 
 KeyValue Storeのステータス動機を確認します
 
 設定
-~~~~
+----
 設定を行います。
 
 ``ubuntu01`` 、 ``ubuntu02`` で以下の操作を行ってください
@@ -283,7 +283,7 @@ KeyValue Storeのステータス動機を確認します
 - 同 ``ユーザ`` からのアクセスに置いて、異なる ``接続元のIPアドレス`` である場合、通信を拒否します
 
 動作確認
-~~~~
+----
 
 ``ubuntu01`` で ``iplist`` という名称のKeyValが生成されていることが確認できます
 
@@ -372,7 +372,13 @@ KeyValue Storeのステータス動機を確認します
 3. APIを使ったKeyvalの操作
 ====
 
-KeyValの機能は、NGINX Plus APIを使って外部から操作することが可能です。以下のコマンドを実行し動作を確認してください
+KeyValの機能は、NGINX Plus APIを使って外部から操作することが可能です。
+
+詳細は以下のページを参照してください
+
+- `API /http/keyvals/{httpKeyvalZoneName} <http://nginx.org/en/docs/http/ngx_http_api_module.html#http_keyvals_http_keyval_zone_name>`__
+
+以下のコマンドを実行し動作を確認してください
 
 - 追加
 
@@ -414,6 +420,8 @@ KeyVal状態を確認します
 
   curl -s 127.0.0.1:8888/api/8/http/keyvals/iplist -X PATCH -d '{ "user1":"192.168.0.1" }'
 
+KeyVal状態を確認します
+
 .. code-block:: cmdin
 
   curl -s 127.0.0.1:8888/api/8/http/keyvals | jq .
@@ -439,6 +447,8 @@ KeyVal状態を確認します
 
   curl -s 127.0.0.1:8888/api/8/http/keyvals/iplist -X PATCH -d '{ "user1":null }'
 
+KeyVal状態を確認します
+
 .. code-block:: cmdin
 
   curl -s 127.0.0.1:8888/api/8/http/keyvals | jq .
@@ -463,6 +473,8 @@ KeyVal状態を確認します
 .. code-block:: cmdin
 
   curl -s 127.0.0.1:8888/api/8/http/keyvals/iplist -X DELETE 
+
+KeyVal状態を確認します
 
 .. code-block:: cmdin
 
