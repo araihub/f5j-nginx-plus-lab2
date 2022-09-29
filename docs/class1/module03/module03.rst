@@ -1298,13 +1298,42 @@ OIDCのRPとしてNGINXを動作させる方法を説明します
 .. image:: ./media/nginx-oidc-slide.jpg
    :width: 500
 
-KeyCloakの設定
+- Keycloakの起動
+
+Keycloakを起動するため、 ``docker_host`` へログインします
+
+Windows Jump Hostへログインいただくと、SSHClientのショートカットがありますので、
+そちらの ``docker_host`` をクリックし、接続してください。
+
+   - .. image:: ../module01/media/putty_icon.jpg
+      :width: 50
+
+   - .. image:: ../module01/media/putty_menu.jpg
+      :width: 200
+
+
+以下コマンドを実行し、Keycloakを読み込みます。
+
+.. code-block:: cmdin
+
+  # cd ~/
+  # git clone https://github.com/BeF5/f5j-nginx-plus-lab2-conf
+  cd ~/f5j-nginx-plus-lab2-conf/docker-compose/keycloak
+  docker-compose -f keycloak-docker-compose.yaml up -d
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+
+  Starting keycloak_keycloak_1 ... done
+
+Keycloakの設定
 ----
 
 Identity Provider として利用する Keycloakの設定を行います
 
 
-| ブラウザからKeyCloakにアクセスし、設定を行います。
+| ブラウザからKeycloakにアクセスし、設定を行います。
 | Chromeを開き、 `http://10.1.1.5:8081/ <http://10.1.1.5:8081/>`__ へアクセスしてください。
 
    .. image:: ./media/keycloak_top.jpg
@@ -1406,7 +1435,7 @@ NJSモジュールがインストールされたことを確認します
   cd ~/
   git clone https://github.com/nginxinc/nginx-openid-connect.git
 
-取得したGitリポジトリに、OIDCに必要となる情報を取得し、ファイルを生成するスクリプトが保存されています。以下コマンドで、KeyCloakから必要となる情報を取得します
+取得したGitリポジトリに、OIDCに必要となる情報を取得し、ファイルを生成するスクリプトが保存されています。以下コマンドで、Keycloakから必要となる情報を取得します
 
 .. code-block:: cmdin
 
@@ -1455,7 +1484,7 @@ NJSモジュールを有効にするため ``load_modules`` ディレクティ�
   load_module modules/ngx_http_js_module.so;
   load_module modules/ngx_stream_js_module.so;
 
-設定ファイルを一部変更します。 ``<Client Secret>`` の情報は先程KeyCloakの設定画面で確認した文字列を入力してコマンドを実行してください
+設定ファイルを一部変更します。 ``<Client Secret>`` の情報は先程Keycloakの設定画面で確認した文字列を入力してコマンドを実行してください
 
 .. code-block:: cmdin
 
