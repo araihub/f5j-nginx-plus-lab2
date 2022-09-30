@@ -1373,40 +1373,6 @@ Errorログを確認します
 4. OIDCによる通信制御
 ====
 
-OIDCのRPとしてNGINXを動作させる方法を説明します
-
-.. image:: ./media/nginx-oidc-slide.jpg
-   :width: 500
-
-- Keycloakの起動
-
-Keycloakを起動するため、 ``docker_host`` へログインします
-
-Windows Jump Hostへログインいただくと、SSHClientのショートカットがありますので、
-そちらの ``docker_host`` をクリックし、接続してください。
-
-   - .. image:: ../module01/media/putty_icon.jpg
-      :width: 50
-
-   - .. image:: ../module01/media/putty_menu.jpg
-      :width: 200
-
-
-以下コマンドを実行し、Keycloakを読み込みます。
-
-.. code-block:: cmdin
-
-  # cd ~/
-  # git clone https://github.com/BeF5/f5j-nginx-plus-lab2-conf
-  cd ~/f5j-nginx-plus-lab2-conf/docker-compose/keycloak
-  docker-compose -f keycloak-docker-compose.yaml up -d
-
-.. code-block:: bash
-  :caption: 実行結果サンプル
-  :linenos:
-
-  Starting keycloak_keycloak_1 ... done
-
 Keycloakの設定
 ----
 
