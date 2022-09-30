@@ -1652,7 +1652,7 @@ IDaaSサービスと連携するなどインターネットを経由してOIDC�
 
 - IDaaSサービスで指定するリダイレクトURLとして ``https://<FQDN>/_codexch`` を指定してください
 
-- 以下設定を参考に、 ``443 ssl`` 、 適切な証明書を ``ssl_certificate / key`` で指定してください
+- 以下設定を参考に、 listen directive に ``443 ssl`` を指定、 ``ssl_certificate / key`` で指定する適切な証明書を配置してください
 
 .. code-block:: bash
   :caption: 設定サンプル
