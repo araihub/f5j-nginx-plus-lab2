@@ -1435,7 +1435,7 @@ Sticky LearnはNGINXがProxyする際にクライアントへ応答されるレ�
 
 .. code-block:: cmdin
 
-  cat ~/f5j-nginx-plus-lab2-conf/lab/session-persistence2-route.conf
+  cat ~/f5j-nginx-plus-lab2-conf/lab/session-persistence3-learn.conf
 
 .. code-block:: bash
   :caption: 実行結果サンプル
@@ -1502,7 +1502,7 @@ Sticky LearnはNGINXがProxyする際にクライアントへ応答されるレ�
 
 .. code-block:: cmdin
 
-  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/session-persistence2-route.conf /etc/nginx/conf.d/default.conf
+  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/session-persistence3-learn.conf /etc/nginx/conf.d/default.conf
   sudo nginx -s reload
 
 
