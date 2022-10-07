@@ -1376,7 +1376,7 @@ Sticky Route はUpstreamのサーバに対し予め route を設定し、リク�
 
   { "request_uri": "/?flag=a&routeid=val.a","server_addr":"10.1.1.8","server_port":"82"}
 
-``route`` の値が ``b`` である ``server_port`` が ``82`` からの応答であることが確認できます。Cookie の値に従って応答返されていることが確認できます
+``route`` の値が ``b`` である、 ``server_port`` が ``82`` server からの応答であることが確認できます。Cookie の値に従って応答返されていることが確認できます
 
 URLパラメータのみを指定したリクエストを送信します
 
