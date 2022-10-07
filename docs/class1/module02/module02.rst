@@ -1300,7 +1300,7 @@ Sticky Route はUpstreamのサーバに対し予め route を設定し、リク�
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1-3,5-7,9-11,15,17-18,23
+  :emphasize-lines: 1-3,5-7,9-11,15,17-18,22
 
   log_format session_info '$remote_addr - $remote_user [$time_local] "$request" '
                  '$status $body_bytes_sent "$http_referer" "$http_user_agent" '
@@ -1333,7 +1333,7 @@ Sticky Route はUpstreamのサーバに対し予め route を設定し、リク�
 
 - 15行目および17-18行目が ``sticky route`` に関する設定となります。17-18行目の末尾に ``route=`` で示した内容が入力された場合にそれぞれのサーバに転送されます。そのrouteとして判定する条件が15行目の内容であり、左側から優先度が高くなり、設定例では、 ``$route_cookie`` 、 ``$route_uri`` 、 ``$arg_flag`` を指定しています
 - 5-7行目が、cookieの値を正規表現で評価し、``$route_cookie`` に対して正規表現から取得した ``$route`` の値を格納するための map directive で、 Request URIの内容に対し同様の処理を行う箇所が9-11行目となります
-- 1-3行目、23行目はこれらの値の結果を確認するために指定したAccess Logに関する設定です
+- 1-3行目、22行目はこれらの値の結果を確認するために指定したAccess Logに関する設定です
 
 設定を反映します
 
@@ -1376,7 +1376,7 @@ Sticky Route はUpstreamのサーバに対し予め route を設定し、リク�
 
   { "request_uri": "/?flag=a&routeid=val.a","server_addr":"10.1.1.8","server_port":"82"}
 
-``route`` の値が ``b`` である、 ``server_port`` が ``82`` server からの応答であることが確認できます。Cookie の値に従って応答返されていることが確認できます
+``route`` の値が ``b`` であるため、 ``server_port`` が ``82`` の server からの応答であることが確認できます。Cookie の値に従って応答返されていることが確認できます
 
 URLパラメータのみを指定したリクエストを送信します
 
@@ -1390,7 +1390,7 @@ URLパラメータのみを指定したリクエストを送信します
 
   { "request_uri": "/?flag=a&routeid=val.b","server_addr":"10.1.1.8","server_port":"82"}
 
-``route`` の値が ``b`` である ``server_port`` が ``82`` からの応答であることが確認できます。URLパラメータの ``routeid`` の値が適切に処理され応答が返されていることが確認できます
+``route`` の値が ``b`` であるため、 ``server_port`` が ``82`` の server からの応答であることが確認できます。URLパラメータの ``routeid`` の値が適切に処理され応答が返されていることが確認できます
 
 ``flag`` のURLパラメータを指定したリクエストを送信します
 
@@ -1404,7 +1404,7 @@ URLパラメータのみを指定したリクエストを送信します
 
   { "request_uri": "/?flag=b","server_addr":"10.1.1.8","server_port":"82"}
 
-``route`` の値が ``b`` である ``server_port`` が ``82`` からの応答であることが確認できます。URLパラメータの ``flag`` の値が適切に処理され応答が返されていることが確認できます
+``route`` の値が ``b`` であるため、 ``server_port`` が ``82`` の server からの応答であることが確認できます。URLパラメータの ``flag`` の値が適切に処理され応答が返されていることが確認できます
 
 
 どのように通信を行っているのか確認するため、ログの内容を確認します
@@ -1445,7 +1445,7 @@ Sticky LearnはNGINXがProxyする際にクライアントへ応答されるレ�
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
-  :emphasize-lines: 1-3,8-11,31,28,36
+  :emphasize-lines: 1-3,8-10,25,28,33,37
 
   log_format session_info '$remote_addr - $remote_user [$time_local] "$request" '
                  '$status $body_bytes_sent "$http_referer" "$http_user_agent" '
@@ -1488,13 +1488,13 @@ Sticky LearnはNGINXがProxyする際にクライアントへ応答されるレ�
   }
 
 
-- 8-11行目が、``sticky learn`` の設定となります
+- 8-10行目が、``sticky learn`` の設定となります
 
   - ``create`` : sticky session を生成するための条件となる、upstream(分散先)から応答されたCookieの値を指定します。この例では ``srv-id`` というCookieの値が取得されます
   - ``lookup`` : 2回目以降のリクエストで通信維持の判定を行うための ``Cookieの名称`` を指定します。この例では ``srv-id`` というCookieが提示される想定となります
   - ``zone``   : sticky learn の セッション情報を保持するZoneを指定します。1m(1 Mbyte)の場合、64bit のプラットフォームであれば約4000のエントリを保持できます
 
-- 31行目で、 ``sticky learn`` を設定したupstream ``server_sticky_learn`` に従って転送します。この宛先はNGINX自身がListenする 8081, 8082 となります
+- 28行目で、 ``sticky learn`` を設定したupstream ``server_sticky_learn`` に従って転送します。この宛先はNGINX自身がListenする 8081, 8082 となります
 - 8081 , 8082 を指定するserver directiveはupstream ``server_group`` に従って転送します。このUpstreamでは ``sticky cookie`` を設定しているためレスポンスに ``srv-id`` という名称の ``set-cookie`` を返します
 
 
