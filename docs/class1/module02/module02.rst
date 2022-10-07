@@ -1165,8 +1165,11 @@ Health Checkはこれらの文字列ステータスをもとに、サーバの�
 - HTTP Upstream Sticky の詳細: `ngx_http_upstream_module / sticky <http://nginx.org/en/docs/http/ngx_http_upstream_module.html#sticky>`__ 
 - HTTP Load Balancing解説:  `Enabling Session Persistence <https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/#enabling-session-persistence>`__
 
-設定
+1. sticky cookie
 ----
+
+設定
+~~~~
 
 設定内容を確認します
 
@@ -1206,7 +1209,7 @@ Health Checkはこれらの文字列ステータスをもとに、サーバの�
 
 
 動作確認
-----
+~~~~
 
 以下のコマンドを実行し、動作を確認します。
 
@@ -1277,6 +1280,332 @@ Health Checkはこれらの文字列ステータスをもとに、サーバの�
 
 先程と同様のホストにアクセスしていることが確認できます。その後複数回実行いただいた場合にも同様の結果となることが確認いただけます。
 
+
+
+2. route
+----
+
+Sticky Route はUpstreamのサーバに対し予め route を設定し、リクエストの情報の一部から取得した route 情報を元に転送先を決定する手法となります
+
+
+設定
+~~~~
+
+設定内容を確認します
+
+.. code-block:: cmdin
+
+  cat ~/f5j-nginx-plus-lab2-conf/lab/session-persistence2-route.conf
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 1-3,5-7,9-11,15,17-18,23
+
+  log_format session_info '$remote_addr - $remote_user [$time_local] "$request" '
+                 '$status $body_bytes_sent "$http_referer" "$http_user_agent" '
+                 'Cookie $route_cookie URIrouteid $route_uri URIflag $arg_flag';
+
+  map $cookie_routeid $route_cookie {
+      ~.+\.(?P<route>\w+)$ $route;
+  }
+
+  map $request_uri $route_uri {
+      ~routeid=.+\.(?P<route>\w+)$ $route;
+  }
+
+  upstream server_group {
+      zone backend 64k;
+      sticky route $route_cookie $route_uri $arg_flag;
+
+      server backend1:81 route=a;
+      server backend1:82 route=b;
+  }
+
+
+  server {
+     access_log /var/log/nginx/access.log session_info;
+     listen 80;
+     location / {
+         proxy_pass http://server_group;
+     }
+  }
+
+
+- 15行目および17-18行目が ``sticky route`` に関する設定となります。17-18行目の末尾に ``route=`` で示した内容が入力された場合にそれぞれのサーバに転送されます。そのrouteとして判定する条件が15行目の内容であり、左側から優先度が高くなり、設定例では、 ``$route_cookie`` 、 ``$route_uri`` 、 ``$arg_flag`` を指定しています
+- 5-7行目が、cookieの値を正規表現で評価し、``$route_cookie`` に対して正規表現から取得した ``$route`` の値を格納するための map directive で、 Request URIの内容に対し同様の処理を行う箇所が9-11行目となります
+- 1-3行目、23行目はこれらの値の結果を確認するために指定したAccess Logに関する設定です
+
+設定を反映します
+
+.. code-block:: cmdin
+
+  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/session-persistence2-route.conf /etc/nginx/conf.d/default.conf
+  sudo nginx -s reload
+
+
+動作確認
+~~~~
+
+複数のパラメータを指定し動作を確認します
+
+|優先度|種類          | 値            |
+|1     |Cookie        | routeid=val.b |
+|2     |URLパラメータ | routeid=val.a |
+|3     |URLパラメータ | flag=a        |
+
+- 設定の解説で確認した通り、表のような優先度で評価されます
+- Cookieの ``routeid`` の値、 ``.(ドット)`` の右側の値が ``route`` の判定で利用されます
+- URLパラメータの ``routeid`` の値、 ``.(ドット)`` の右側の値が ``route`` の判定で利用されます
+- URLパラメータの ``flag`` の値が ``route`` の判定で利用されます
+
+リクエストを送信します
+
+.. code-block:: cmdin
+
+  curl "localhost/?flag=a&routeid=val.a" -H "Cookie: routeid=val.b"
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+
+  { "request_uri": "/?flag=a&routeid=val.a","server_addr":"10.1.1.8","server_port":"82"}
+
+``route`` の値が ``b`` である ``server_port`` が ``82`` からの応答であることが確認できます。Cookie の値に従って応答返されていることが確認できます
+
+URLパラメータのみを指定したリクエストを送信します
+
+.. code-block:: cmdin
+
+  curl "localhost/?flag=a&routeid=val.b"
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+
+  { "request_uri": "/?flag=a&routeid=val.b","server_addr":"10.1.1.8","server_port":"82"}
+
+``route`` の値が ``b`` である ``server_port`` が ``82`` からの応答であることが確認できます。URLパラメータの ``routeid`` の値が適切に処理され応答が返されていることが確認できます
+
+``flag`` のURLパラメータを指定したリクエストを送信します
+
+.. code-block:: cmdin
+
+  curl "localhost/?flag=b"
+  
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+
+  { "request_uri": "/?flag=b","server_addr":"10.1.1.8","server_port":"82"}
+
+``route`` の値が ``b`` である ``server_port`` が ``82`` からの応答であることが確認できます。URLパラメータの ``flag`` の値が適切に処理され応答が返されていることが確認できます
+
+
+どのように通信を行っているのか確認するため、ログの内容を確認します
+
+.. code-block:: cmdin
+
+  tail -3 /var/log/nginx/access.log
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+
+127.0.0.1 - - [07/Oct/2022:13:52:53 +0900] "GET /?flag=a&routeid=val.a HTTP/1.1" 200 86 "-" "curl/7.68.0" Cookie b URIrouteid a URIflag a
+127.0.0.1 - - [07/Oct/2022:13:53:35 +0900] "GET /?flag=a&routeid=val.b HTTP/1.1" 200 86 "-" "curl/7.68.0" Cookie  URIrouteid b URIflag a
+127.0.0.1 - - [07/Oct/2022:13:53:57 +0900] "GET /?flag=b HTTP/1.1" 200 72 "-" "curl/7.68.0" Cookie  URIrouteid  URIflag b
+
+- 1行目は、1回目のリクエストの結果を示し ``Cookie`` の判定結果が ``b`` 、 ``URLのrouteid`` が ``a`` 、 ``URIのflag`` が ``a`` であることがわかります
+- 2行目は、2回目のリクエストの結果を示し ``URLのrouteid`` が ``b`` 、 ``URIのflag`` が ``a`` であることがわかります
+- 3行目は、3回目のリクエストの結果を示し ``URIのflag`` が ``b`` であることがわかります
+
+それぞれ指定した値に応じて結果が出力されていたことが確認できます
+
+
+3. learn
+----
+
+Sticky LearnはNGINXがProxyする際にクライアントへ応答されるレスポンスに含まれるCookieの名称を指定、その値を取得し、以降その値に応じて通信維持を行う手法です
+
+設定
+~~~~
+
+設定内容を確認します
+
+.. code-block:: cmdin
+
+  cat ~/f5j-nginx-plus-lab2-conf/lab/session-persistence2-route.conf
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 1-3,8-11,31,28,36
+
+  log_format session_info '$remote_addr - $remote_user [$time_local] "$request" '
+                 '$status $body_bytes_sent "$http_referer" "$http_user_agent" '
+                 'upstream $proxy_host $proxy_port server $upstream_addr';
+
+
+  upstream server_sticky_learn {
+      zone backend 64k;
+      sticky learn
+             create=$upstream_cookie_srv-id
+             lookup=$cookie_srv-id
+             zone=sticky_learn:1m;
+
+      server localhost:8081;
+      server localhost:8082;
+  }
+
+
+  upstream server_group {
+      zone backend 64k;
+      sticky cookie srv-id expires=1h domain=.example.com path=/;
+
+      server backend1:81;
+      server backend1:82;
+  }
+
+
+  server {
+     access_log /var/log/nginx/access.log session_info;
+     listen 80;
+     location / {
+         proxy_pass http://server_sticky_learn;
+     }
+  }
+
+  server {
+     access_log /var/log/nginx/access.log session_info;
+     listen 8081;
+     listen 8082;
+     location / {
+         proxy_pass http://server_group;
+     }
+  }
+
+
+
+- 8-11行目が、``sticky learn`` の設定となります
+
+  - ``create`` : sticky session を生成するための条件となる、upstream(分散先)から応答されたCookieの値を指定します。この例では ``srv-id`` というCookieの値が取得されます
+  - ``lookup`` : 2回目以降のリクエストで通信維持の判定を行うための ``Cookieの名称`` を指定します。この例では ``srv-id`` というCookieが提示される想定となります
+  - ``zone``   : sticky learn の セッション情報を保持するZoneを指定します。1m(1 Mbyte)の場合、64bit のプラットフォームであれば約4000のエントリを保持できます
+
+- 31行目で、 ``sticky learn`` を設定したupstream ``server_sticky_learn`` に従って転送します。この宛先はNGINX自身がListenする 8081, 8082 となります
+- 8081 , 8082 を指定するserver directiveはupstream ``server_group`` に従って転送します。このUpstreamでは ``sticky cookie`` を設定しているためレスポンスに ``srv-id`` という名称の ``set-cookie`` を返します
+
+
+
+設定を反映します
+
+.. code-block:: cmdin
+
+  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/session-persistence2-route.conf /etc/nginx/conf.d/default.conf
+  sudo nginx -s reload
+
+
+動作確認
+~~~~
+
+以下のコマンドを実行し、動作を確認します。
+
+.. code-block:: cmdin
+
+  curl -v localhost
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 16,19
+
+  *   Trying 127.0.0.1:80...
+  * TCP_NODELAY set
+  * Connected to localhost (127.0.0.1) port 80 (#0)
+  > GET / HTTP/1.1
+  > Host: localhost
+  > User-Agent: curl/7.68.0
+  > Accept: */*
+  >
+  * Mark bundle as not supporting multiuse
+  < HTTP/1.1 200 OK
+  < Server: nginx/1.21.6
+  < Date: Fri, 07 Oct 2022 03:45:26 GMT
+  < Content-Type: application/octet-stream
+  < Content-Length: 65
+  < Connection: keep-alive
+  < Set-Cookie: srv-id=d90714beec1b83b75b3817079340fb00; expires=Fri, 07-Oct-22 04:45:26 GMT; max-age=3600; domain=.example.com; path=/
+  <
+  * Connection #0 to host localhost left intact
+  { "request_uri": "/","server_addr":"10.1.1.8","server_port":"81"}
+
+
+- 16行目に、NGINXより Cookie が応答されていることを確認してください。 ``srv_id`` の値がSticky Sessionに利用されるCookieの値となります。この値は ``server_group`` のUpstreamの設定に応じて動作した結果となります
+- 19行目の内容より、この実行結果では、 ``server_port`` が ``81`` に転送されていることがわかります。
+
+以下のように、curlコマンドで、 ``srv_id`` の内容を HTTP Header に指定しリクエストを送付してください
+
+.. code-block:: cmdin
+
+  # curl -v localhost -H "Cookie: srv_id=<初回アクセス時に取得したsrv_idの値>"
+  curl -v localhost -H "Cookie: srv-id=d90714beec1b83b75b3817079340fb00"
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 8
+
+  
+  *   Trying 127.0.0.1:80...
+  * TCP_NODELAY set
+  * Connected to localhost (127.0.0.1) port 80 (#0)
+  > GET / HTTP/1.1
+  > Host: localhost
+  > User-Agent: curl/7.68.0
+  > Accept: */*
+  > Cookie: srv-id=d90714beec1b83b75b3817079340fb00
+  >
+  * Mark bundle as not supporting multiuse
+  < HTTP/1.1 200 OK
+  < Server: nginx/1.21.6
+  < Date: Fri, 07 Oct 2022 03:45:47 GMT
+  < Content-Type: application/octet-stream
+  < Content-Length: 65
+  < Connection: keep-alive
+  < Set-Cookie: srv-id=d90714beec1b83b75b3817079340fb00; expires=Fri, 07-Oct-22 04:45:47 GMT; max-age=3600; domain=.example.com; path=/
+  <
+  * Connection #0 to host localhost left intact
+  { "request_uri": "/","server_addr":"10.1.1.8","server_port":"81"}
+
+先程と同様のホストにアクセスしていることが確認できます。その後複数回実行いただいた場合にも同様の結果となることが確認いただけます。
+
+
+どのように通信を行っているのか確認するため、ログの内容を確認します
+
+.. code-block:: cmdin
+
+  tail -4 /var/log/nginx/access.log
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+  :emphasize-lines: 8
+
+  127.0.0.1 - - [07/Oct/2022:12:45:26 +0900] "GET / HTTP/1.0" 200 65 "-" "curl/7.68.0" upstream server_group 80 server 10.1.1.8:81
+  127.0.0.1 - - [07/Oct/2022:12:45:26 +0900] "GET / HTTP/1.1" 200 65 "-" "curl/7.68.0" upstream server_sticky_learn 80 server 127.0.0.1:8081
+  127.0.0.1 - - [07/Oct/2022:12:45:47 +0900] "GET / HTTP/1.0" 200 65 "-" "curl/7.68.0" upstream server_group 80 server 10.1.1.8:81
+  127.0.0.1 - - [07/Oct/2022:12:45:47 +0900] "GET / HTTP/1.1" 200 65 "-" "curl/7.68.0" upstream server_sticky_learn 80 server 127.0.0.1:8081
+
+- ``upstream`` 、 ``server`` の値を確認します
+- 1-2行目が1回目の curl 、 3-4 行目が2回目の curl となります
+- 1行目は ``server_group`` の ``10.1.1.8:81`` の応答がなされた結果を示します
+- 2行目は sticky learn を設定したupstream ``server_sticky_learn`` の ``127.0.0.1:8081`` の応答がなされた結果を示します
+- 3行目の curl は1行目の同様と結果、4行目の curl は2行目と同様の結果になっています
+- 3行目は server_group に設定した sticky cookie によりセッションが維持されており、 ``srv-id`` を応答しています
+- 4行目は server_sticky_learn に設定した sticky learn が ``srv-id`` の内容を取得し、以降の通信では ``srv-id`` の内容に応じて通信を転送していることがわかります
+
+以降、同じCookieを指定し実行した場合、同様の結果となることが確認いただけます
 
 6. サービスディスカバリ
 ====
