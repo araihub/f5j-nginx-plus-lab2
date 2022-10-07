@@ -1322,7 +1322,6 @@ Sticky Route はUpstreamのサーバに対し予め route を設定し、リク�
       server backend1:82 route=b;
   }
 
-
   server {
      access_log /var/log/nginx/access.log session_info;
      listen 80;
@@ -1446,7 +1445,6 @@ Sticky LearnはNGINXがProxyする際にクライアントへ応答されるレ�
                  '$status $body_bytes_sent "$http_referer" "$http_user_agent" '
                  'upstream $proxy_host $proxy_port server $upstream_addr';
 
-
   upstream server_sticky_learn {
       zone backend 64k;
       sticky learn
@@ -1458,7 +1456,6 @@ Sticky LearnはNGINXがProxyする際にクライアントへ応答されるレ�
       server localhost:8082;
   }
 
-
   upstream server_group {
       zone backend 64k;
       sticky cookie srv-id expires=1h domain=.example.com path=/;
@@ -1466,7 +1463,6 @@ Sticky LearnはNGINXがProxyする際にクライアントへ応答されるレ�
       server backend1:81;
       server backend1:82;
   }
-
 
   server {
      access_log /var/log/nginx/access.log session_info;
@@ -1484,7 +1480,6 @@ Sticky LearnはNGINXがProxyする際にクライアントへ応答されるレ�
          proxy_pass http://server_group;
      }
   }
-
 
 
 - 8-11行目が、``sticky learn`` の設定となります
