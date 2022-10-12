@@ -1657,7 +1657,6 @@ IDaaSサービスと連携するなどインターネットを経由してOIDC�
 .. code-block:: bash
   :caption: 設定サンプル
   :linenos:
-  :emphasize-lines: 4,14,20-21,24,27
 
   server {
 
