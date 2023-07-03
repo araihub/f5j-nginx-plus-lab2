@@ -1407,7 +1407,7 @@ Client ID: ``nginx-plus`` を指定し、 **Save** します。
   .. image:: ./media/keycloak_clients_new.jpg
      :width: 500
 
-SettingsタブのAccess Type: ``confidential`` を選択し、Valid Redirect URIs: `http://10.1.1.7:80/_codexch <http://10.1.1.7:80/_codexch>`__ を入力し、 **Save** します。
+SettingsタブのAccess Type: ``confidential`` を選択し、Valid Redirect URIs: ``http://10.1.1.7:80/_codexch`` を入力し、 **Save** します。
 
   .. image:: ./media/keycloak_clients_setting.jpg
      :width: 500
