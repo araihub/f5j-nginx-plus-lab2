@@ -464,6 +464,10 @@ VRRPにより、冗長構成が動作していることが確認できます
 .. NOTE::
   SSH証明書認証を行っている場合、 ``~/.ssh/id_rsa`` というファイル名で鍵を配置する必要があります
 
+  以下URLを参考に設定ください
+
+  `Configuring root SSH Access to the Peers <https://docs.nginx.com/nginx/admin-guide/high-availability/configuration-sharing/#configuring-root-ssh-access-to-the-peers>`__
+
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
