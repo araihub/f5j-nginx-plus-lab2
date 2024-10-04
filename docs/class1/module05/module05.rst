@@ -24,6 +24,8 @@
 
 .. code-block:: cmdin
 
+  cd ~/
+  git clone https://github.com/BeF5/f5j-nginx-plus-lab2-conf
   sudo mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf-bak
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/zone-sync02-nginx.conf /etc/nginx/nginx.conf
   sudo nginx -s reload
