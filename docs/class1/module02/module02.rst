@@ -1542,10 +1542,10 @@ Sticky LearnはNGINXがProxyする際にクライアントへ応答されるレ�
   { "request_uri": "/","server_addr":"10.1.1.8","server_port":"81"}
 
 
-- 16行目に、NGINXより Cookie が応答されていることを確認してください。 ``srv_id`` の値がSticky Sessionに利用されるCookieの値となります。この値は ``server_group`` のUpstreamの設定に応じて動作した結果となります
+- 16行目に、NGINXより Cookie が応答されていることを確認してください。 ``srv-id`` の値がSticky Sessionに利用されるCookieの値となります。この値は ``server_group`` のUpstreamの設定に応じて動作した結果となります
 - 19行目の内容より、この実行結果では、 ``server_port`` が ``81`` に転送されていることがわかります。
 
-以下のように、curlコマンドで、 ``srv_id`` の内容を HTTP Header に指定しリクエストを送付してください
+以下のように、curlコマンドで、 ``srv-id`` の内容を HTTP Header に指定しリクエストを送付してください
 
 .. code-block:: cmdin
 
