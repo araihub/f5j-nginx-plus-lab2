@@ -58,7 +58,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
 
 双方のホストで ``nginx-ha-setup`` コマンドを利用しセットアップを行います。実行するホストに注意してください
 
-``ubuntu01`` で以下の内容を実行してください。 ``BACKUP`` としてセットアップします
+``ubuntu01`` で以下の内容を実行してください。 ``MASTER`` としてセットアップします
 
 .. code-block:: cmdin
 
@@ -155,7 +155,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
   
   Thank you for using NGINX Plus!
 
-``ubuntu02`` で以下の内容を実行してください。 ``MASTER`` としてセットアップします
+``ubuntu02`` で以下の内容を実行してください。 ``BACKUP`` としてセットアップします
 
 .. code-block:: cmdin
 
