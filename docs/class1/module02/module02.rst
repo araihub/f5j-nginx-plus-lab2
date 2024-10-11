@@ -1184,7 +1184,7 @@ Health Checkはこれらの文字列ステータスをもとに、サーバの�
 
   upstream server_group {
       zone backend 64k;
-      sticky cookie srv_id expires=1h domain=.example.com path=/;
+      sticky cookie srv-id expires=1h domain=.example.com path=/;
   
       server backend1:81;
       server backend1:82;
@@ -1237,20 +1237,20 @@ Health Checkはこれらの文字列ステータスをもとに、サーバの�
   < Content-Type: application/octet-stream
   < Content-Length: 65
   < Connection: keep-alive
-  < Set-Cookie: srv_id=d90714beec1b83b75b3817079340fb00; expires=Fri, 23-Sep-22 07:46:16 GMT; max-age=3600; domain=.example.com; path=/
+  < Set-Cookie: srv-id=d90714beec1b83b75b3817079340fb00; expires=Fri, 23-Sep-22 07:46:16 GMT; max-age=3600; domain=.example.com; path=/
   <
   * Connection #0 to host localhost left intact
   { "request_uri": "/","server_addr":"10.1.1.8","server_port":"81"}
 
-- 16行目に、NGINXより Cookie が応答されていることを確認してください。 ``srv_id`` の値がSticky Sessionに利用されるCookieの値となります。その他の値は設定で示した内容と同様であることことが確認できます
+- 16行目に、NGINXより Cookie が応答されていることを確認してください。 ``srv-id`` の値がSticky Sessionに利用されるCookieの値となります。その他の値は設定で示した内容と同様であることことが確認できます
 - 19行目の内容より、この実行結果では、 ``server_port`` が ``81`` に転送されていることがわかります。
 
-以下のように、curlコマンドで、 ``srv_id`` の内容を HTTP Header に指定しリクエストを送付してください
+以下のように、curlコマンドで、 ``srv-id`` の内容を HTTP Header に指定しリクエストを送付してください
 
 .. code-block:: cmdin
 
-  # curl -v localhost -H "Cookie: srv_id=<初回アクセス時に取得したsrv_idの値>"
-  curl -v localhost -H "Cookie: srv_id=d90714beec1b83b75b3817079340fb00"
+  # curl -v localhost -H "Cookie: srv-id=<初回アクセス時に取得したsrv-idの値>"
+  curl -v localhost -H "Cookie: srv-id=d90714beec1b83b75b3817079340fb00"
 
 .. code-block:: bash
   :caption: 実行結果サンプル
@@ -1264,7 +1264,7 @@ Health Checkはこれらの文字列ステータスをもとに、サーバの�
   > Host: localhost
   > User-Agent: curl/7.68.0
   > Accept: */*
-  > Cookie: srv_id=d90714beec1b83b75b3817079340fb00
+  > Cookie: srv-id=d90714beec1b83b75b3817079340fb00
   >
   * Mark bundle as not supporting multiuse
   < HTTP/1.1 200 OK
@@ -1273,7 +1273,7 @@ Health Checkはこれらの文字列ステータスをもとに、サーバの�
   < Content-Type: application/octet-stream
   < Content-Length: 65
   < Connection: keep-alive
-  < Set-Cookie: srv_id=d90714beec1b83b75b3817079340fb00; expires=Fri, 23-Sep-22 07:46:41 GMT; max-age=3600; domain=.example.com; path=/
+  < Set-Cookie: srv-id=d90714beec1b83b75b3817079340fb00; expires=Fri, 23-Sep-22 07:46:41 GMT; max-age=3600; domain=.example.com; path=/
   <
   * Connection #0 to host localhost left intact
   { "request_uri": "/","server_addr":"10.1.1.8","server_port":"81"}
@@ -1549,7 +1549,7 @@ Sticky LearnはNGINXがProxyする際にクライアントへ応答されるレ�
 
 .. code-block:: cmdin
 
-  # curl -v localhost -H "Cookie: srv_id=<初回アクセス時に取得したsrv_idの値>"
+  # curl -v localhost -H "Cookie: srv-id=<初回アクセス時に取得したsrv-idの値>"
   curl -v localhost -H "Cookie: srv-id=d90714beec1b83b75b3817079340fb00"
 
 .. code-block:: bash
