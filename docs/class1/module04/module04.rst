@@ -531,7 +531,7 @@ VRRPにより、冗長構成が動作していることが確認できます
 
 .. code-block:: cmdin
 
-  curl localhost; curl 10.1.1.7 ; curl 10.1.1.6 ; curl 10.1.1.100
+  curl localhost; echo; curl 10.1.1.7; echo; curl 10.1.1.6; echo; curl 10.1.1.100; echo
 
 .. NOTE::
   F5 Lab環境では、VIPを持つホスト以外からVIPへのアクセスはエラーとなります
@@ -685,7 +685,7 @@ keepalived が停止したためステータスが更新されず ``MASTER`` の
 
 .. code-block:: cmdin
 
-  curl localhost; curl 10.1.1.7 ; curl 10.1.1.6 ; curl 10.1.1.100
+  curl localhost; echo; curl 10.1.1.7; echo; curl 10.1.1.6; echo; curl 10.1.1.100; echo
 
 .. NOTE::
   F5 Lab環境では、VIPを持つホスト以外からVIPへのアクセスはエラーとなります
@@ -693,13 +693,13 @@ keepalived が停止したためステータスが更新されず ``MASTER`` の
 
 .. code-block:: cmdin
 
-  Dest: 127.0.0.1:80 Response from ip-10-1-1-7
+  Dest: 127.0.0.1:80 Response from ip-10-1-1-6
   Dest: 10.1.1.7:80 Response from ip-10-1-1-7
   Dest: 10.1.1.6:80 Response from ip-10-1-1-6
-  Dest: 10.1.1.100:80 Response from ip-10-1-1-7
+  Dest: 10.1.1.100:80 Response from ip-10-1-1-6
 
-- ``ubuntu01`` である ``ip-10-1-1-7`` 、 ``ubuntu02`` である ``ip-10-1-1-7`` からの応答が確認できます
-- ``VIP`` である ``10.1.1.100`` の結果を確認すると ``ubuntu01`` から応答されていることが確認できます
+- ``ubuntu01`` である ``ip-10-1-1-7`` 、 ``ubuntu02`` である ``ip-10-1-1-6`` からの応答が確認できます
+- ``VIP`` である ``10.1.1.100`` の結果を確認すると ``ubuntu02`` から応答されていることが確認できます
 
 ``ubuntu01`` へ切り戻しを行います
 
