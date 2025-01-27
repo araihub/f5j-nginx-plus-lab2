@@ -431,6 +431,10 @@ VRRPにより、冗長構成が動作していることが確認できます
 
 .. code-block:: cmdin
 
+  # ubuntu01-nginx を使用する場合
+  vi ~/f5j-nginx-plus-lab2-conf/lab/ha-nginx-sync.conf
+  NODES="10.1.1.6" から　NODES="10.1.1.12"に変更してください。
+
   # 設定同期に関する設定をコピー
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/ha-nginx-sync.conf /etc/nginx-sync.conf
 
