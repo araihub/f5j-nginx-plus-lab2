@@ -58,7 +58,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
 
 双方のホストで ``nginx-ha-setup`` コマンドを利用しセットアップを行います。実行するホストに注意してください
 
-``ubuntu01`` で以下の内容を実行してください。 ``MASTER`` としてセットアップします
+``ubuntu01`` もしくは ``ubuntu01-nginx`` で以下の内容を実行してください。 ``MASTER`` としてセットアップします
 
 .. code-block:: cmdin
 
@@ -96,7 +96,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
   IP address of this host is set to: 10.1.1.7/24
   Primary network interface: ens5
   
-  Now please enter IP address of a second node: 10.1.1.6  << 10.1.1.6(対向のNGINX) を入力
+  Now please enter IP address of a second node: 10.1.1.6  << 10.1.1.6もしくは10.1.1.12(対向のNGINX) を入力
   You entered: 10.1.1.6
   Is it correct? (y/n)  << y を入力
   IP address of the second node is set to: 10.1.1.6
@@ -155,7 +155,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
   
   Thank you for using NGINX Plus!
 
-``ubuntu02`` で以下の内容を実行してください。 ``BACKUP`` としてセットアップします
+``ubuntu02`` もしくは　``ubuntu02-nginx`` で以下の内容を実行してください。 ``BACKUP`` としてセットアップします
 
 .. code-block:: cmdin
 
@@ -193,7 +193,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
   IP address of this host is set to: 10.1.1.6/24
   Primary network interface: ens5
   
-  Now please enter IP address of a second node: 10.1.1.7  << 10.1.1.7(対向のNGINX) を入力
+  Now please enter IP address of a second node: 10.1.1.7  << 10.1.1.7もしくは10.1.1.11(対向のNGINX) を入力
   You entered: 10.1.1.7
   Is it correct? (y/n)  << y を入力
   IP address of the second node is set to: 10.1.1.7
