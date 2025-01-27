@@ -266,7 +266,7 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
   :linenos:
   :emphasize-lines: 19,20,26,28,31
 
-  ## ubuntu01 の出力結果
+  ## ubuntu01 もしくは ubuntu01-nginx の出力結果
   global_defs {
           vrrp_version 3
   }
@@ -315,7 +315,7 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
   :linenos:
   :emphasize-lines: 19,20,26,28,31
 
-  ## ubuntu02 の出力結果
+  ## ubuntu02 もしくは　ubuntu02-nginx の出力結果
   global_defs {
           vrrp_version 3
   }
@@ -354,7 +354,7 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
           notify "/usr/lib/keepalived/nginx-ha-notify"
   }
 
-- 18-38行目が、冗長構成の主要な設定となり、基本的な記述は ``ubuntu01(MASTER)`` となります
+- 18-38行目が、冗長構成の主要な設定となり、基本的な記述は ``ubuntu01(MASTER)`` もしくは ``ubuntu01-nginx(MASTER)`` となります
 - 20行目が、Priorityを指定し ``BACKUP`` は ``100`` となります
 
 
@@ -368,10 +368,10 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
   :caption: 実行結果サンプル
   :linenos:
 
-  ## ubuntu01 の出力結果
+  ## ubuntu01 もしくは ubuntu01-nginx の出力結果
   STATE=MASTER
 
-  ## ubuntu02 の出力結果
+  ## ubuntu02  もしくは ubuntu02-nginx の出力結果
   STATE=BACKUP
 
 出力結果よりホストのステータスが確認できます
@@ -387,7 +387,7 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
   :linenos:
   :emphasize-lines: 7-8
 
-  ## ubuntu01 の出力結果
+  ## ubuntu01 もしくは ubuntu01-nginx の出力結果
   2: ens5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc mq state UP group default qlen 1000
       link/ether 06:b4:8c:4d:47:0d brd ff:ff:ff:ff:ff:ff
       altname enp0s5
@@ -398,7 +398,7 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
       inet6 fe80::4b4:8cff:fe4d:470d/64 scope link
          valid_lft forever preferred_lft forever
   
-  ## ubuntu02 の出力結果
+  ## ubuntu02 もしくは ubuntu02-nginx の出力結果
   2: ens5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc mq state UP group default qlen 1000
       link/ether 06:f7:7d:74:47:55 brd ff:ff:ff:ff:ff:ff
       inet 10.1.1.6/24 brd 10.1.1.255 scope global dynamic ens5
@@ -407,7 +407,7 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
          valid_lft forever preferred_lft forever
 
 - 各ホストのインタフェースが確認できます
-- ``MASTER`` である ``ubuntu01`` の結果を確認すると、7-8行目に ``VIP`` が割り当てられることが確認できます
+- ``MASTER`` である ``ubuntu01`` もしくは ``ubuntu01-nginx`` の結果を確認すると、7-8行目に ``VIP`` が割り当てられることが確認できます
 
 VRRPにより、冗長構成が動作していることが確認できます
 
@@ -425,9 +425,9 @@ VRRPにより、冗長構成が動作していることが確認できます
 ----
 
 設定の同期は、ある指定のホストからその他ホスト(郡)へ同期する機能となります。
-``ubuntu01`` から ``ubuntu02`` に同期する設定を行います。
+``ubuntu01`` もしくは ``ubuntu01-nginx`` から ``ubuntu02`` もしくは ``ubuntu02-nginx`` に同期する設定を行います。
 
-``ubuntu01`` で以下の操作を行ってください
+``ubuntu01`` もしくは ``ubuntu01-nginx`` で以下の操作を行ってください
 
 .. code-block:: cmdin
 
@@ -506,7 +506,7 @@ VRRPにより、冗長構成が動作していることが確認できます
 
 正しくファイルが同期されているか確認します。
 
-``ubuntu02`` で以下の操作を行ってください
+``ubuntu02`` もしくは ``ubuntu02-nginx`` で以下の操作を行ってください
 
 .. code-block:: cmdin
 
@@ -519,7 +519,7 @@ VRRPにより、冗長構成が動作していることが確認できます
   ls: cannot access '/etc/nginx/conf.d/dummy.conf': No such file or directory
   /etc/nginx/conf.d/default.conf
 
-``default.conf`` は正しくファイルが存在しますが、 ``dummy.conf`` は同期の対象外のため ``ubuntu02`` には存在しないことがわかります
+``default.conf`` は正しくファイルが存在しますが、 ``dummy.conf`` は同期の対象外のため ``ubuntu02`` もしくは ``ubuntu02-nginx`` には存在しないことがわかります
 
 
 3. 動作確認
@@ -527,7 +527,7 @@ VRRPにより、冗長構成が動作していることが確認できます
 
 疎通を確認します
 
-``ubuntu01`` で以下の操作を行ってください
+``ubuntu01`` もしくは ``ubuntu01-nginx`` で以下の操作を行ってください
 
 .. code-block:: cmdin
 
@@ -546,8 +546,8 @@ VRRPにより、冗長構成が動作していることが確認できます
   Dest: 10.1.1.6:80 Response from ip-10-1-1-6
   Dest: 10.1.1.100:80 Response from ip-10-1-1-7
 
-- ``ubuntu01`` である ``ip-10-1-1-7`` 、 ``ubuntu02`` である ``ip-10-1-1-6`` からの応答が確認できます
-- ``VIP`` である ``10.1.1.100`` の結果を確認すると ``ubuntu01`` から応答されていることが確認できます
+- ``ubuntu01`` である ``ip-10-1-1-7`` もしくは``ubuntu01-nginx`` である ``ip-10-1-1-11`` 、 ``ubuntu02`` である ``ip-10-1-1-6`` もしくは ``ubuntu02-nginx`` である ``ip-10-1-1-12`` からの応答が確認できます
+- ``VIP`` である ``10.1.1.100`` の結果を確認すると ``ubuntu01`` もしくは  ``ubuntu01-nginx`` から応答されていることが確認できます
 
 以下コマンドで Failover を実施します
 
@@ -618,7 +618,7 @@ keepalived が停止したためステータスが更新されず ``MASTER`` の
 
 インタフェースでは、 ``VIP`` が表示されていないことが確認できます
 
-``ubuntu02`` のステータスを確認します
+``ubuntu02`` もしくは　``ubuntu02-nginx``のステータスを確認します
 
 .. code-block:: cmdin
 
@@ -681,11 +681,13 @@ keepalived が停止したためステータスが更新されず ``MASTER`` の
          valid_lft forever preferred_lft forever
 
 
-``ubuntu02`` 上で疎通を確認します
+``ubuntu02`` もしくは　``ubuntu02-nginx`` 上で疎通を確認します
 
 .. code-block:: cmdin
 
   curl localhost; echo; curl 10.1.1.7; echo; curl 10.1.1.6; echo; curl 10.1.1.100; echo
+  または
+  curl localhost; echo; curl 10.1.1.11; echo; curl 10.1.1.12; echo; curl 10.1.1.100; echo
 
 .. NOTE::
   F5 Lab環境では、VIPを持つホスト以外からVIPへのアクセスはエラーとなります
@@ -698,10 +700,10 @@ keepalived が停止したためステータスが更新されず ``MASTER`` の
   Dest: 10.1.1.6:80 Response from ip-10-1-1-6
   Dest: 10.1.1.100:80 Response from ip-10-1-1-6
 
-- ``ubuntu01`` である ``ip-10-1-1-7`` 、 ``ubuntu02`` である ``ip-10-1-1-6`` からの応答が確認できます
-- ``VIP`` である ``10.1.1.100`` の結果を確認すると ``ubuntu02`` から応答されていることが確認できます
+- ``ubuntu01`` である ``ip-10-1-1-7`` もしくは``ubuntu01-nginx`` である ``ip-10-1-1-11`` 、 ``ubuntu02`` である ``ip-10-1-1-6`` もしくは ``ubuntu02-nginx`` である ``ip-10-1-1-12`` からの応答が確認できます
+- ``VIP`` である ``10.1.1.100`` の結果を確認すると ``ubuntu02`` もしくは ``ubuntu02-nginx`` から応答されていることが確認できます
 
-``ubuntu01`` へ切り戻しを行います
+``ubuntu01`` もしくは　``ubuntu01-nginx`` へ切り戻しを行います
 
 以下コマンドで Failover を実施します
 
