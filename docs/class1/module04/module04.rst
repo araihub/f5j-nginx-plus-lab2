@@ -532,6 +532,8 @@ VRRPにより、冗長構成が動作していることが確認できます
 .. code-block:: cmdin
 
   curl localhost; echo; curl 10.1.1.7; echo; curl 10.1.1.6; echo; curl 10.1.1.100; echo
+  または
+  curl localhost; echo; curl 10.1.1.11; echo; curl 10.1.1.12; echo; curl 10.1.1.100; echo
 
 .. NOTE::
   F5 Lab環境では、VIPを持つホスト以外からVIPへのアクセスはエラーとなります
@@ -594,9 +596,9 @@ Failover の結果を確認します
   :caption: 実行結果サンプル
   :linenos:
 
-  STATE=MASTER
+  STATE=STOP
 
-keepalived が停止したためステータスが更新されず ``MASTER`` のママとなっていることが確認できます
+keepalived が停止したためステータスが ``STOP`` となっていることが確認できます
 
 インタフェースの状態を確認します
 
