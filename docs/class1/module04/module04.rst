@@ -7,10 +7,10 @@ NGINX Plus 冗長構成
 NGINX Install
 ----
 
-冗長構成とするため、 ``ubuntu02`` に対しNGINXをインストールします。
+冗長構成とするため、 ``ubuntu02`` に対しNGINXをインストールします。 NGINX Plusインストール済みの ``ubuntu02-nginx`` もご利用いただけます。
 
 Windows Jump Hostへログインいただくと、SSHClientのショートカットがありますので、そちらをダブルクリックし
-``ubuntu02`` へ接続ください
+``ubuntu02`` もしくは ``ubuntu02-nginx`` へ接続ください
 
    - .. image:: ../module01/media/putty_icon.jpg
       :width: 50
@@ -34,7 +34,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
 モジュールのインストール
 ----
 
-``ubuntu01`` 、 ``ubuntu02`` の双方で以下のモジュールをインストールしてください
+``ubuntu01`` 、 ``ubuntu02`` もしくは ``ubuntu01-nginx`` 、 ``ubuntu02-nginx`` の双方で以下のモジュールをインストールしてください
 
 .. code-block:: cmdin
 
