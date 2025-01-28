@@ -12,7 +12,7 @@
 
 ステータス同期の設定を行います
 
-``ubuntu01`` で以下の操作を行ってください
+``ubuntu01`` もしくは ``ubuntu01-nginx`` で以下の操作を行ってください
 
 .. code-block:: cmdin
 
@@ -64,7 +64,7 @@ NGINX Plus APIへ接続しステータス同期(Zone Synchronization)の状態�
 
 設定を行います。
 
-``ubuntu01`` 、 ``ubuntu02`` で以下の操作を行ってください
+``ubuntu01`` もしくは ``ubuntu01-nginx`` 、 ``ubuntu02`` もしくは ``ubuntu02-nginx`` で以下の操作を行ってください
 
 .. code-block:: cmdin
 
@@ -140,15 +140,18 @@ F5ラボ環境を利用の場合、以下のどちらかの手段で接続して
 
   - ``ubuntu01`` `http://10.1.1.7:8888/dashboard.html <http://10.1.1.7:8888/dashboard.html>`__ を開いてください
   - ``ubuntu02`` `http://10.1.1.6:8888/dashboard.html <http://10.1.1.6:8888/dashboard.html>`__ を開いてください
+  - ``ubuntu01-nginx`` `http://10.1.1.11:8888/dashboard.html <http://10.1.1.11:8888/dashboard.html>`__ を開いてください
+  - ``ubuntu02-nginx`` `http://10.1.1.12:8888/dashboard.html <http://10.1.1.12:8888/dashboard.html>`__ を開いてください
+
 
 - ``リモートデスクトップを利用していない場合`` 
 
-  - ご利用の端末から接続するため、 ``ubuntu01`` 、 ``ubuntu02`` の接続メニューより ``PLUS  DASHBOARD`` を選択してください
+  - ご利用の端末から接続するため、 ``ubuntu01`` もしくは ``ubuntu01-nginx`` 、 ``ubuntu02`` もしくは ``ubuntu02-nginx`` の接続メニューより ``PLUS  DASHBOARD`` を選択してください
 
 動作確認
 ----
 
-``ubuntu01`` から、 ``ubuntu01(10.1.1.7)`` / ``ubuntu02(10.1.1.6)`` 双方に対して接続を行います。
+``ubuntu01`` もしくは ``ubuntu01-nginx`` から、 ``ubuntu01(10.1.1.7)`` もしくは ``ubuntu01-nginx(10.1.1.11)`` / ``ubuntu02(10.1.1.6)`` もしくは ``ubuntu02-nginx`` 双方に対して接続を行います。
 以下の操作を行ってください
 
 .. code-block:: cmdin
@@ -159,7 +162,7 @@ F5ラボ環境を利用の場合、以下のどちらかの手段で接続して
   echo "== To ubuntu01 =="; for i in {1..2}; do echo "==$i=="; curl -I -s 10.1.1.11; done; sleep 1; echo "== To ubuntu02 =="; for i in {1..2}; do echo "==$i=="; curl -I -s 10.1.1.12; done
 
 
-``ubuntu01`` 宛に接続した後、ステータス同期を待つため ``1秒停止(sleep 1)`` した後、 ``ubuntu02`` へ接続します
+``ubuntu01`` もしくは ``ubuntu01-nginx`` 宛に接続した後、ステータス同期を待つため ``1秒停止(sleep 1)`` した後、 ``ubuntu02`` へ接続します
 
 .. code-block:: bash
   :caption: 実行結果サンプル
@@ -205,7 +208,7 @@ F5ラボ環境を利用の場合、以下のどちらかの手段で接続して
   Content-Length: 197
   Connection: keep-alive
 
-- ``ubuntu01`` に対して接続した結果を確認すると、5行目の1回目が ``200`` 、13行目の2回目が ``503`` となり RateLimitにより通信が拒否されています
+- ``ubuntu01`` もしくは ``ubuntu01-nginx`` に対して接続した結果を確認すると、5行目の1回目が ``200`` 、13行目の2回目が ``503`` となり RateLimitにより通信が拒否されています
 - ``ubuntu02`` に対して接続した結果を確認すると、25行目の1回目、33行目が2回目の双方が ``503`` となり RateLimitにより通信が拒否されています。これはステータスが同期されたためこのような動作となります
 
 ダッシュボードの状態を確認します
@@ -213,8 +216,8 @@ F5ラボ環境を利用の場合、以下のどちらかの手段で接続して
 .. image:: ./media/nginx-ha-statesync-ratelimit1.jpg
    :width: 500
 
-- ``HTTP Zones`` のタブの内容を開きます。左が ``ubuntu01`` 、右が ``ubuntu02`` となります。
-- 通信の結果、 ``5xx`` の結果を確認すると ``ubuntu01`` に ``1`` 、 ``ubuntu02`` が ``2`` となっていることがわかります
+- ``HTTP Zones`` のタブの内容を開きます。左が ``ubuntu01`` もしくは ``ubuntu01-nginx`` 、右が ``ubuntu02`` もしくは ``ubuntu02-nginx`` となります。
+- 通信の結果、 ``5xx`` の結果を確認すると ``ubuntu01`` もしくは ``ubuntu01-nginx`` に ``1`` 、 ``ubuntu02`` もしくは ``ubuntu02-nginx`` が ``2`` となっていることがわかります
 - ``Limit Req`` のグラフを見ると、 ``ubuntu02`` は通信の許可がなく ``Rejected`` されていることがわかります
 
 3. Key Value Store
@@ -226,7 +229,7 @@ KeyValue Storeのステータス動機を確認します
 ----
 設定を行います。
 
-``ubuntu01`` 、 ``ubuntu02`` で以下の操作を行ってください
+``ubuntu01`` もしくは ``ubuntu01-nginx`` 、 ``ubuntu02`` もしくは ``ubuntu02-nginx`` で以下の操作を行ってください
 
 .. code-block:: cmdin
 
@@ -289,7 +292,7 @@ KeyValue Storeのステータス動機を確認します
 動作確認
 ----
 
-``ubuntu01`` で ``iplist`` という名称のKeyValが生成されていることが確認できます
+``ubuntu01`` もしくは ``ubuntu01-nginx`` で ``iplist`` という名称のKeyValが生成されていることが確認できます
 
 .. code-block:: cmdin
 
@@ -304,11 +307,13 @@ KeyValue Storeのステータス動機を確認します
   }
 
 
-``ubuntu01`` でサンプルのリクエストを送信し、KeyVal の結果を確認します
+``ubuntu01`` もしくは ``ubuntu01-nginx`` でサンプルのリクエストを送信し、KeyVal の結果を確認します
 
 .. code-block:: cmdin
 
   curl 10.1.1.7/; echo"" ; curl -s 127.0.0.1:8888/api/8/http/keyvals | jq .
+  もしくは
+  curl 10.1.1.11/; echo"" ; curl -s 127.0.0.1:8888/api/8/http/keyvals | jq .
 
 .. code-block:: bash
   :caption: 実行結果サンプル
@@ -322,11 +327,13 @@ KeyValue Storeのステータス動機を確認します
 - リクエストで ``user`` を指定しないため、応答が ``No Username`` となります。
 - ``iplist`` にエントリは追加されていません
 
-``ubuntu01`` でURLパラメータに ``user`` を含むサンプルのリクエストを送信し、KeyVal の結果を確認します
+``ubuntu01`` もしくは ``ubuntu01-nginx`` でURLパラメータに ``user`` を含むサンプルのリクエストを送信し、KeyVal の結果を確認します
 
 .. code-block:: cmdin
 
   curl 10.1.1.7/?user=user1 ; echo"" ; curl -s 127.0.0.1:8888/api/8/http/keyvals | jq .
+  もしくは
+  curl 10.1.1.11/?user=user1 ; echo"" ; curl -s 127.0.0.1:8888/api/8/http/keyvals | jq .
 
 .. code-block:: bash
   :caption: 実行結果サンプル
@@ -339,13 +346,15 @@ KeyValue Storeのステータス動機を確認します
   }
 
 - 正しくURLパラメータの ``user`` に ``user1`` が指定されているため、正しい応答が確認できます
-- ``iplist`` に ``ubuntu01`` のIPアドレス 10.1.1.7 が追加されていることが確認できます
+- ``iplist`` に ``ubuntu01`` もしくは ``ubuntu01-nginx`` のIPアドレス 10.1.1.7/0.1.1.11 が追加されていることが確認できます
 
 ``ubuntu02`` でURLパラメータに ``user`` を含むサンプルのリクエストを送信し、KeyVal の結果を確認します
 
 .. code-block:: cmdin
 
   curl 10.1.1.7/?user=user1 ; echo"" ; curl -s 127.0.0.1:8888/api/8/http/keyvals | jq .
+  もしくは
+  curl 10.1.1.11/?user=user1 ; echo"" ; curl -s 127.0.0.1:8888/api/8/http/keyvals | jq .
 
 .. code-block:: bash
   :caption: 実行結果サンプル
@@ -359,7 +368,7 @@ KeyValue Storeのステータス動機を確認します
   }
 
 - URLパラメータの ``user`` に ``user1`` が指定されていますが、 ``Mismatch client IP address`` が応答されています
-- ``iplist`` をみると ``ubuntu01`` のIPアドレス 10.1.1.7 が追加されており、 ``ubuntu02`` のアドレスと一致しないためエラーとなったことがわかります
+- ``iplist`` をみると ``ubuntu01`` もしくは ``ubuntu01-nginx`` のIPアドレス 10.1.1.7/10.1.1.11 が追加されており、 ``ubuntu02`` もしくは ``ubuntu02-nginx`` のアドレスと一致しないためエラーとなったことがわかります
 
 このように、KeyVal を利用することで、複雑な処理が可能となります。
 またステータス同期により複数のホストで状態を同期し、協調した処理を行うことが可能となります
