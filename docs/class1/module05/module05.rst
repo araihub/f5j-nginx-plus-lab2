@@ -22,7 +22,7 @@
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/zone-sync01-nginx.conf /etc/nginx/nginx.conf
   sudo nginx -s reload
 
-``ubuntu02`` で以下の操作を行ってください
+``ubuntu02`` もしくは ``ubuntu02-nginx`` で以下の操作を行ってください
 
 .. code-block:: cmdin
 
@@ -151,7 +151,7 @@ F5ラボ環境を利用の場合、以下のどちらかの手段で接続して
 動作確認
 ----
 
-``ubuntu01`` もしくは ``ubuntu01-nginx`` から、 ``ubuntu01(10.1.1.7)`` もしくは ``ubuntu01-nginx(10.1.1.11)`` / ``ubuntu02(10.1.1.6)`` もしくは ``ubuntu02-nginx`` 双方に対して接続を行います。
+``ubuntu01`` もしくは ``ubuntu01-nginx`` から、 ``ubuntu01(10.1.1.7)`` もしくは ``ubuntu01-nginx(10.1.1.11)`` / ``ubuntu02(10.1.1.6)`` もしくは ``ubuntu02-nginx(10.1.1.12)`` 双方に対して接続を行います。
 以下の操作を行ってください
 
 .. code-block:: cmdin
@@ -162,7 +162,7 @@ F5ラボ環境を利用の場合、以下のどちらかの手段で接続して
   echo "== To ubuntu01 =="; for i in {1..2}; do echo "==$i=="; curl -I -s 10.1.1.11; done; sleep 1; echo "== To ubuntu02 =="; for i in {1..2}; do echo "==$i=="; curl -I -s 10.1.1.12; done
 
 
-``ubuntu01`` もしくは ``ubuntu01-nginx`` 宛に接続した後、ステータス同期を待つため ``1秒停止(sleep 1)`` した後、 ``ubuntu02`` へ接続します
+``ubuntu01`` もしくは ``ubuntu01-nginx`` 宛に接続した後、ステータス同期を待つため ``1秒停止(sleep 1)`` した後、 ``ubuntu02``  もしくは ``ubuntu02-nginx`` へ接続します
 
 .. code-block:: bash
   :caption: 実行結果サンプル
@@ -209,7 +209,7 @@ F5ラボ環境を利用の場合、以下のどちらかの手段で接続して
   Connection: keep-alive
 
 - ``ubuntu01`` もしくは ``ubuntu01-nginx`` に対して接続した結果を確認すると、5行目の1回目が ``200`` 、13行目の2回目が ``503`` となり RateLimitにより通信が拒否されています
-- ``ubuntu02`` に対して接続した結果を確認すると、25行目の1回目、33行目が2回目の双方が ``503`` となり RateLimitにより通信が拒否されています。これはステータスが同期されたためこのような動作となります
+- ``ubuntu02`` もしくは ``ubuntu02-nginx`` に対して接続した結果を確認すると、25行目の1回目、33行目が2回目の双方が ``503`` となり RateLimitにより通信が拒否されています。これはステータスが同期されたためこのような動作となります
 
 ダッシュボードの状態を確認します
 
@@ -348,7 +348,7 @@ KeyValue Storeのステータス動機を確認します
 - 正しくURLパラメータの ``user`` に ``user1`` が指定されているため、正しい応答が確認できます
 - ``iplist`` に ``ubuntu01`` もしくは ``ubuntu01-nginx`` のIPアドレス 10.1.1.7/0.1.1.11 が追加されていることが確認できます
 
-``ubuntu02`` でURLパラメータに ``user`` を含むサンプルのリクエストを送信し、KeyVal の結果を確認します
+``ubuntu02`` もしくは ``ubuntu02-nginx`` でURLパラメータに ``user`` を含むサンプルのリクエストを送信し、KeyVal の結果を確認します
 
 .. code-block:: cmdin
 
