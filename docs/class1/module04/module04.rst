@@ -446,6 +446,8 @@ VRRPにより、冗長構成が動作していることが確認できます
 .. code-block:: cmdin
 
   sudo systemctl stop keepalived
+  もしくはnginxを停止する場合
+  sudo systemctl stop nginx
 
 Failover の結果を確認します
 
