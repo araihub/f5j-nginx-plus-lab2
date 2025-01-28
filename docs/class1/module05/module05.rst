@@ -153,11 +153,11 @@ F5ラボ環境を利用の場合、以下のどちらかの手段で接続して
 
 .. code-block:: cmdin
 
-  echo "== To ubuntu01 =="
-  for i in {1..2}; do echo "==$i==" ; curl -I -s 10.1.1.7 ; done
-  sleep 1;
-  echo "== To ubuntu02 =="
-  for i in {1..2}; do echo "==$i==" ; curl -I -s 10.1.1.6  ; done
+  ubuntu01/02の場合
+  echo "== To ubuntu01 =="; for i in {1..2}; do echo "==$i=="; curl -I -s 10.1.1.7; done; sleep 1; echo "== To ubuntu02 =="; for i in {1..2}; do echo "==$i=="; curl -I -s 10.1.1.6; done
+  ubuntu01/02-nginxの場合
+  echo "== To ubuntu01 =="; for i in {1..2}; do echo "==$i=="; curl -I -s 10.1.1.11; done; sleep 1; echo "== To ubuntu02 =="; for i in {1..2}; do echo "==$i=="; curl -I -s 10.1.1.12; done
+
 
 ``ubuntu01`` 宛に接続した後、ステータス同期を待つため ``1秒停止(sleep 1)`` した後、 ``ubuntu02`` へ接続します
 
