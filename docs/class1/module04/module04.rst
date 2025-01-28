@@ -411,122 +411,8 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
 
 VRRPにより、冗長構成が動作していることが確認できます
 
-2. 設定同期
-====
 
-.. image:: ./media/nginx-ha-configsync-slide.jpg
-   :width: 500
-
-詳細は以下のページを参照してください
-
-- `Synchronizing NGINX Configuration in a Cluster <https://docs.nginx.com/nginx/admin-guide/high-availability/configuration-sharing/>`__
-
-設定
-----
-
-設定の同期は、ある指定のホストからその他ホスト(郡)へ同期する機能となります。
-``ubuntu01`` もしくは ``ubuntu01-nginx`` から ``ubuntu02`` もしくは ``ubuntu02-nginx`` に同期する設定を行います。
-
-``ubuntu01`` もしくは ``ubuntu01-nginx`` で以下の操作を行ってください
-
-.. code-block:: cmdin
-
-  # ubuntu01-nginx を使用する場合
-  vi ~/f5j-nginx-plus-lab2-conf/lab/ha-nginx-sync.conf
-  NODES="10.1.1.6" から　NODES="10.1.1.12"に変更してください。
-
-  # 設定同期に関する設定をコピー
-  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/ha-nginx-sync.conf /etc/nginx-sync.conf
-
-  # 不要な設定を削除
-  sudo rm -rf /etc/nginx/conf.d/*
-
-  # 必要な設定ファイルをコピー＆反映
-  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/api.conf /etc/nginx/conf.d/
-  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/ha-demo.conf /etc/nginx/conf.d/default.conf
-  sudo touch /etc/nginx/conf.d/dummy.conf
-  sudo nginx -s reload
-
-配置したファイルが存在すること確認します
-
-.. code-block:: cmdin
-
-  ls /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/dummy.conf
-
-.. code-block:: bash
-  :caption: 実行結果サンプル
-  :linenos:
-
-  /etc/nginx/conf.d/default.conf  /etc/nginx/conf.d/dummy.conf
-
-以下コマンドを実行し、設定ファイルを同期します
-
-.. code-block:: cmdin
-
-  nginx-sync.sh
-
-.. NOTE::
-  SSH証明書認証を行っている場合、 ``~/.ssh/id_rsa`` というファイル名で鍵を配置する必要があります
-
-  以下URLを参考に設定ください
-
-  `Configuring root SSH Access to the Peers <https://docs.nginx.com/nginx/admin-guide/high-availability/configuration-sharing/#configuring-root-ssh-access-to-the-peers>`__
-
-.. code-block:: bash
-  :caption: 実行結果サンプル
-  :linenos:
-
-   * Synchronization started at Wed Sep 28 10:53:40 UTC 2022
-  
-   * Checking prerequisites
-  
-   * Testing local nginx configuration file
-  
-  nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-  nginx: configuration file /etc/nginx/nginx.conf test is successful
-  Connection to 10.1.1.6 closed.
-  Connection to 10.1.1.6 closed.
-  Connection to 10.1.1.6 closed.
-   * Backing up configuration on ubuntu@10.1.1.6
-  
-  Connection to 10.1.1.6 closed.
-  Connection to 10.1.1.6 closed.
-  Connection to 10.1.1.6 closed.
-  Connection to 10.1.1.6 closed.
-  Connection to 10.1.1.6 closed.
-   * Updating configuration on ubuntu@10.1.1.6
-  
-  Connection to 10.1.1.6 closed.
-  Connection to 10.1.1.6 closed.
-   * Testing nginx config on ubuntu@10.1.1.6
-  
-  nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-  nginx: configuration file /etc/nginx/nginx.conf test is successful
-  Connection to 10.1.1.6 closed.
-  Connection to 10.1.1.6 closed.
-  Connection to 10.1.1.6 closed.
-  
-   * Synchronization ended at Wed Sep 28 10:53:52 UTC 2022
-
-正しくファイルが同期されているか確認します。
-
-``ubuntu02`` もしくは ``ubuntu02-nginx`` で以下の操作を行ってください
-
-.. code-block:: cmdin
-
-  ls /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/dummy.conf
-
-.. code-block:: bash
-  :caption: 実行結果サンプル
-  :linenos:
-
-  ls: cannot access '/etc/nginx/conf.d/dummy.conf': No such file or directory
-  /etc/nginx/conf.d/default.conf
-
-``default.conf`` は正しくファイルが存在しますが、 ``dummy.conf`` は同期の対象外のため ``ubuntu02`` もしくは ``ubuntu02-nginx`` には存在しないことがわかります
-
-
-3. 動作確認
+2. 動作確認
 ====
 
 疎通を確認します
@@ -774,6 +660,119 @@ Failover の結果を確認します
       inet6 fe80::82d:6dff:fe00:fbc5/64 scope link
          valid_lft forever preferred_lft forever
 
+3. 設定同期
+====
+
+.. image:: ./media/nginx-ha-configsync-slide.jpg
+   :width: 500
+
+詳細は以下のページを参照してください
+
+- `Synchronizing NGINX Configuration in a Cluster <https://docs.nginx.com/nginx/admin-guide/high-availability/configuration-sharing/>`__
+
+設定
+----
+
+設定の同期は、ある指定のホストからその他ホスト(郡)へ同期する機能となります。
+``ubuntu01`` もしくは ``ubuntu01-nginx`` から ``ubuntu02`` もしくは ``ubuntu02-nginx`` に同期する設定を行います。
+
+``ubuntu01`` もしくは ``ubuntu01-nginx`` で以下の操作を行ってください
+
+.. code-block:: cmdin
+
+  # ubuntu01-nginx を使用する場合
+  vi ~/f5j-nginx-plus-lab2-conf/lab/ha-nginx-sync.conf
+  NODES="10.1.1.6" から　NODES="10.1.1.12"に変更してください。
+
+  # 設定同期に関する設定をコピー
+  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/ha-nginx-sync.conf /etc/nginx-sync.conf
+
+  # 不要な設定を削除
+  sudo rm -rf /etc/nginx/conf.d/*
+
+  # 必要な設定ファイルをコピー＆反映
+  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/api.conf /etc/nginx/conf.d/
+  sudo cp ~/f5j-nginx-plus-lab2-conf/lab/ha-demo.conf /etc/nginx/conf.d/default.conf
+  sudo touch /etc/nginx/conf.d/dummy.conf
+  sudo nginx -s reload
+
+配置したファイルが存在すること確認します
+
+.. code-block:: cmdin
+
+  ls /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/dummy.conf
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+
+  /etc/nginx/conf.d/default.conf  /etc/nginx/conf.d/dummy.conf
+
+以下コマンドを実行し、設定ファイルを同期します
+
+.. code-block:: cmdin
+
+  nginx-sync.sh
+
+.. NOTE::
+  SSH証明書認証を行っている場合、 ``~/.ssh/id_rsa`` というファイル名で鍵を配置する必要があります
+
+  以下URLを参考に設定ください
+
+  `Configuring root SSH Access to the Peers <https://docs.nginx.com/nginx/admin-guide/high-availability/configuration-sharing/#configuring-root-ssh-access-to-the-peers>`__
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+
+   * Synchronization started at Wed Sep 28 10:53:40 UTC 2022
+  
+   * Checking prerequisites
+  
+   * Testing local nginx configuration file
+  
+  nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+  nginx: configuration file /etc/nginx/nginx.conf test is successful
+  Connection to 10.1.1.6 closed.
+  Connection to 10.1.1.6 closed.
+  Connection to 10.1.1.6 closed.
+   * Backing up configuration on ubuntu@10.1.1.6
+  
+  Connection to 10.1.1.6 closed.
+  Connection to 10.1.1.6 closed.
+  Connection to 10.1.1.6 closed.
+  Connection to 10.1.1.6 closed.
+  Connection to 10.1.1.6 closed.
+   * Updating configuration on ubuntu@10.1.1.6
+  
+  Connection to 10.1.1.6 closed.
+  Connection to 10.1.1.6 closed.
+   * Testing nginx config on ubuntu@10.1.1.6
+  
+  nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+  nginx: configuration file /etc/nginx/nginx.conf test is successful
+  Connection to 10.1.1.6 closed.
+  Connection to 10.1.1.6 closed.
+  Connection to 10.1.1.6 closed.
+  
+   * Synchronization ended at Wed Sep 28 10:53:52 UTC 2022
+
+正しくファイルが同期されているか確認します。
+
+``ubuntu02`` もしくは ``ubuntu02-nginx`` で以下の操作を行ってください
+
+.. code-block:: cmdin
+
+  ls /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/dummy.conf
+
+.. code-block:: bash
+  :caption: 実行結果サンプル
+  :linenos:
+
+  ls: cannot access '/etc/nginx/conf.d/dummy.conf': No such file or directory
+  /etc/nginx/conf.d/default.conf
+
+``default.conf`` は正しくファイルが存在しますが、 ``dummy.conf`` は同期の対象外のため ``ubuntu02`` もしくは ``ubuntu02-nginx`` には存在しないことがわかります
 
 4. その他冗長構成
 ====
