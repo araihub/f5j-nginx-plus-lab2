@@ -456,19 +456,18 @@ Failover の結果を確認します
   :emphasize-lines: 3,9-13
 
 ● nginx.service - NGINX Plus - high performance web server
-     Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
-     Active: inactive (dead) since Thu 2025-02-06 05:05:11 UTC; 14s ago
-       Docs: https://www.nginx.com/resources/
+    Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+    Active: inactive (dead) since Thu 2025-02-06 05:05:11 UTC; 14s ago
+      Docs: https://www.nginx.com/resources/
     Process: 4427 ExecStartPre=/usr/lib/nginx-plus/check-subscription (code=exited, status=0/SUCCESS)
     Process: 4451 ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf (code=exited, status=0/SUCCESS)
-    Process: 22369 ExecStop=/bin/sh -c /bin/kill -s TERM $(/bin/cat /var/run/nginx.pid) (code=exited, >
-   Main PID: 4452 (code=exited, status=0/SUCCESS)
+    Process: 22369 ExecStop=/bin/sh -c /bin/kill -s TERM $(/bin/cat /var/run/nginx.pid) (code=exited, > Main PID: 4452 (code=exited, status=0/SUCCESS)
 
-Feb 06 02:31:34 ip-10-1-1-11 systemd[1]: Starting NGINX Plus - high performance web server...
-Feb 06 02:31:34 ip-10-1-1-11 systemd[1]: Started NGINX Plus - high performance web server.
-Feb 06 05:05:11 ip-10-1-1-11 systemd[1]: Stopping NGINX Plus - high performance web server...
-Feb 06 05:05:11 ip-10-1-1-11 systemd[1]: nginx.service: Succeeded.
-Feb 06 05:05:11 ip-10-1-1-11 systemd[1]: Stopped NGINX Plus - high performance web server.
+  Feb 06 02:31:34 ip-10-1-1-11 systemd[1]: Starting NGINX Plus - high performance web server...
+  Feb 06 02:31:34 ip-10-1-1-11 systemd[1]: Started NGINX Plus - high performance web server.
+  Feb 06 05:05:11 ip-10-1-1-11 systemd[1]: Stopping NGINX Plus - high performance web server...
+  Feb 06 05:05:11 ip-10-1-1-11 systemd[1]: nginx.service: Succeeded.
+  Feb 06 05:05:11 ip-10-1-1-11 systemd[1]: Stopped NGINX Plus - high performance web server.
 
 出力の内容から nginx が停止していることが確認できます
 
