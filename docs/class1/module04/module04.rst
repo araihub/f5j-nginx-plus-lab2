@@ -7,10 +7,10 @@ NGINX Plus 冗長構成
 NGINX Install
 ----
 
-冗長構成とするため、 ``ubuntu02`` に対しNGINXをインストールします。 NGINX Plusインストール済みの ``ubuntu02-nginx`` もご利用いただけます。
+冗長構成とするため、 ``ubuntu01-nginx`` と ``ubuntu02-nginx`` を使用します。
 
 Windows Jump Hostへログインいただくと、SSHClientのショートカットがありますので、そちらをダブルクリックし
-``ubuntu02`` もしくは ``ubuntu02-nginx`` へ接続ください
+``ubuntu02-nginx`` へ接続ください
 
    - .. image:: ../module01/media/putty_icon.jpg
       :width: 50
@@ -34,7 +34,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
 モジュールのインストール
 ----
 
-``ubuntu01`` 、 ``ubuntu02`` もしくは ``ubuntu01-nginx`` 、 ``ubuntu02-nginx`` の双方で以下のモジュールをインストールしてください
+``ubuntu01-nginx`` 、 ``ubuntu02-nginx`` の双方で以下のモジュールをインストールしてください
 
 .. code-block:: cmdin
 
@@ -58,7 +58,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
 
 双方のホストで ``nginx-ha-setup`` コマンドを利用しセットアップを行います。実行するホストに注意してください
 
-``ubuntu01`` もしくは ``ubuntu01-nginx`` で以下の内容を実行してください。 ``MASTER`` としてセットアップします
+``ubuntu01-nginx`` で以下の内容を実行してください。 ``MASTER`` としてセットアップします
 
 .. code-block:: cmdin
 
@@ -90,16 +90,16 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
   
   In order to communicate with each other, both nodes must have at least one IP address.
   
-  The guessed primary IP of this node is: 10.1.1.7/24  
+  The guessed primary IP of this node is: 10.1.1.11/24  
   
   Do you want to use this address for internal cluster communication? (y/n)  << y を入力
-  IP address of this host is set to: 10.1.1.7/24
+  IP address of this host is set to: 10.1.1.11/24
   Primary network interface: ens5
   
-  Now please enter IP address of a second node: 10.1.1.6  << 10.1.1.6もしくは10.1.1.12(対向のNGINX) を入力
-  You entered: 10.1.1.6
+  Now please enter IP address of a second node: 10.1.1.12  << 10.1.1.12(対向のNGINX) を入力
+  You entered: 10.1.1.12
   Is it correct? (y/n)  << y を入力
-  IP address of the second node is set to: 10.1.1.6
+  IP address of the second node is set to: 10.1.1.12
   
   Press <Enter> to continue...  << ENTER を入力
   
@@ -155,7 +155,7 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
   
   Thank you for using NGINX Plus!
 
-``ubuntu02`` もしくは　``ubuntu02-nginx`` で以下の内容を実行してください。 ``BACKUP`` としてセットアップします
+``ubuntu02-nginx`` で以下の内容を実行してください。 ``BACKUP`` としてセットアップします
 
 .. code-block:: cmdin
 
@@ -187,16 +187,16 @@ Windows Jump Hostへログインいただくと、SSHClientのショートカッ
   
   In order to communicate with each other, both nodes must have at least one IP address.
   
-  The guessed primary IP of this node is: 10.1.1.6/24
+  The guessed primary IP of this node is: 10.1.1.12/24
   
   Do you want to use this address for internal cluster communication? (y/n)  << y を入力
-  IP address of this host is set to: 10.1.1.6/24
+  IP address of this host is set to: 10.1.1.12/24
   Primary network interface: ens5
   
-  Now please enter IP address of a second node: 10.1.1.7  << 10.1.1.7もしくは10.1.1.11(対向のNGINX) を入力
-  You entered: 10.1.1.7
+  Now please enter IP address of a second node: 10.1.1.11  << 10.1.1.11(対向のNGINX) を入力
+  You entered: 10.1.1.11
   Is it correct? (y/n)  << y を入力
-  IP address of the second node is set to: 10.1.1.7
+  IP address of the second node is set to: 10.1.1.11
   
   Press <Enter> to continue...  << ENTER を入力
   
@@ -266,7 +266,7 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
   :linenos:
   :emphasize-lines: 19,20,26,28,31
 
-  ## ubuntu01 もしくは ubuntu01-nginx の出力結果
+  ## ubuntu01-nginx の出力結果
   global_defs {
           vrrp_version 3
   }
@@ -291,9 +291,9 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
           accept
           garp_master_refresh 5
           garp_master_refresh_repeat 1
-          unicast_src_ip 10.1.1.7/24
+          unicast_src_ip 10.1.1.11/24
           unicast_peer {
-                  10.1.1.6
+                  10.1.1.12
           }
           virtual_ipaddress {
                   10.1.1.100
@@ -315,7 +315,7 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
   :linenos:
   :emphasize-lines: 19,20,26,28,31
 
-  ## ubuntu02 もしくは　ubuntu02-nginx の出力結果
+  ## ubuntu02-nginx の出力結果
   global_defs {
           vrrp_version 3
   }
@@ -340,9 +340,9 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
           accept
           garp_master_refresh 5
           garp_master_refresh_repeat 1
-          unicast_src_ip 10.1.1.6/24
+          unicast_src_ip 10.1.1.12/24
           unicast_peer {
-                  10.1.1.7
+                  10.1.1.11
           }
           virtual_ipaddress {
                   10.1.1.100
@@ -354,7 +354,7 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
           notify "/usr/lib/keepalived/nginx-ha-notify"
   }
 
-- 18-38行目が、冗長構成の主要な設定となり、基本的な記述は ``ubuntu01(MASTER)`` もしくは ``ubuntu01-nginx(MASTER)`` となります
+- 18-38行目が、冗長構成の主要な設定となり、基本的な記述は ``ubuntu01-nginx(MASTER)`` となります
 - 20行目が、Priorityを指定し ``BACKUP`` は ``100`` となります
 
 
@@ -368,10 +368,10 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
   :caption: 実行結果サンプル
   :linenos:
 
-  ## ubuntu01 もしくは ubuntu01-nginx の出力結果
+  ## ubuntu01-nginx の出力結果
   STATE=MASTER
 
-  ## ubuntu02  もしくは ubuntu02-nginx の出力結果
+  ## ubuntu02-nginx の出力結果
   STATE=BACKUP
 
 出力結果よりホストのステータスが確認できます
@@ -387,27 +387,27 @@ keepalived の 設定ファイルの内容を確認します。双方のホス�
   :linenos:
   :emphasize-lines: 7-8
 
-  ## ubuntu01 もしくは ubuntu01-nginx の出力結果
+  ## ubuntu01-nginx の出力結果
   2: ens5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc mq state UP group default qlen 1000
       link/ether 06:b4:8c:4d:47:0d brd ff:ff:ff:ff:ff:ff
       altname enp0s5
-      inet 10.1.1.7/24 brd 10.1.1.255 scope global dynamic ens5
+      inet 10.1.1.11/24 brd 10.1.1.255 scope global dynamic ens5
          valid_lft 2830sec preferred_lft 2830sec
       inet 10.1.1.100/32 scope global ens5
          valid_lft forever preferred_lft forever
       inet6 fe80::4b4:8cff:fe4d:470d/64 scope link
          valid_lft forever preferred_lft forever
   
-  ## ubuntu02 もしくは ubuntu02-nginx の出力結果
+  ## ubuntu02-nginx の出力結果
   2: ens5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc mq state UP group default qlen 1000
       link/ether 06:f7:7d:74:47:55 brd ff:ff:ff:ff:ff:ff
-      inet 10.1.1.6/24 brd 10.1.1.255 scope global dynamic ens5
+      inet 10.1.1.12/24 brd 10.1.1.255 scope global dynamic ens5
          valid_lft 2750sec preferred_lft 2750sec
       inet6 fe80::4f7:7dff:fe74:4755/64 scope link
          valid_lft forever preferred_lft forever
 
 - 各ホストのインタフェースが確認できます
-- ``MASTER`` である ``ubuntu01`` もしくは ``ubuntu01-nginx`` の結果を確認すると、7-8行目に ``VIP`` が割り当てられることが確認できます
+- ``MASTER`` である ``ubuntu01-nginx`` の結果を確認すると、7-8行目に ``VIP`` が割り当てられることが確認できます
 
 VRRPにより、冗長構成が動作していることが確認できます
 
@@ -417,12 +417,9 @@ VRRPにより、冗長構成が動作していることが確認できます
 
 疎通を確認します
 
-``ubuntu01`` もしくは ``ubuntu01-nginx`` で以下の操作を行ってください
+``ubuntu01-nginx`` で以下の操作を行ってください
 
 .. code-block:: cmdin
-
-  curl localhost; echo; curl 10.1.1.7; echo; curl 10.1.1.6; echo; curl 10.1.1.100; echo
-  または
   curl localhost; echo; curl 10.1.1.11; echo; curl 10.1.1.12; echo; curl 10.1.1.100; echo
 
 .. NOTE::
@@ -433,50 +430,47 @@ VRRPにより、冗長構成が動作していることが確認できます
   :caption: 実行結果サンプル
   :linenos:
 
-  Dest: 127.0.0.1:80 Response from ip-10-1-1-7
-  Dest: 10.1.1.7:80 Response from ip-10-1-1-7
-  Dest: 10.1.1.6:80 Response from ip-10-1-1-6
-  Dest: 10.1.1.100:80 Response from ip-10-1-1-7
+  Dest: 127.0.0.1:80 Response from ip-10-1-1-11
+  Dest: 10.1.1.11:80 Response from ip-10-1-1-11
+  Dest: 10.1.1.12:80 Response from ip-10-1-1-12
+  Dest: 10.1.1.100:80 Response from ip-10-1-1-11
 
-- ``ubuntu01`` である ``ip-10-1-1-7`` もしくは ``ubuntu01-nginx`` である ``ip-10-1-1-11`` 、 ``ubuntu02`` である ``ip-10-1-1-6`` もしくは ``ubuntu02-nginx`` である ``ip-10-1-1-12`` からの応答が確認できます
-- ``VIP`` である ``10.1.1.100`` の結果を確認すると ``ubuntu01`` もしくは  ``ubuntu01-nginx`` から応答されていることが確認できます
+- ``ubuntu01-nginx`` である ``ip-10-1-1-11`` 、 ``ubuntu02-nginx`` である ``ip-10-1-1-12`` からの応答が確認できます
+- ``VIP`` である ``10.1.1.100`` の結果を確認すると ``ubuntu01-nginx`` から応答されていることが確認できます
 
 以下コマンドで Failover を実施します
 
 .. code-block:: cmdin
 
-  sudo systemctl stop keepalived
-  もしくはnginxを停止する場合
   sudo systemctl stop nginx
 
 Failover の結果を確認します
 
 .. code-block:: cmdin
 
-  sudo systemctl status keepalived
+  sudo systemctl status nginx
 
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
   :emphasize-lines: 3,9-13
 
-  ● keepalived.service - LVS and VRRP High Availability Monitor
-       Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabled)
-       Active: inactive (dead) since Wed 2022-09-28 20:14:05 JST; 20s ago
-     Main PID: 2588 (code=exited, status=0/SUCCESS)
-  
-  Sep 28 19:09:06 ip-10-1-1-7 Keepalived_vrrp[2589]: (VI_1) received lower priority (200) advert from 10.1.1.6 - discarding
-  Sep 28 19:09:07 ip-10-1-1-7 Keepalived_vrrp[2589]: (VI_1) received lower priority (200) advert from 10.1.1.6 - discarding
-  Sep 28 19:09:07 ip-10-1-1-7 Keepalived_vrrp[2589]: (VI_1) Entering MASTER STATE
-  Sep 28 20:14:04 ip-10-1-1-7 systemd[1]: Stopping LVS and VRRP High Availability Monitor...
-  Sep 28 20:14:04 ip-10-1-1-7 Keepalived[2588]: Stopping
-  Sep 28 20:14:04 ip-10-1-1-7 nginx-ha-keepalived[33420]: Transition to state 'STOP' on VRRP instance 'VI_1'.
-  Sep 28 20:14:05 ip-10-1-1-7 Keepalived_vrrp[2589]: Stopped
-  Sep 28 20:14:05 ip-10-1-1-7 Keepalived[2588]: Stopped Keepalived v2.2.7 (01/16,2022)
-  Sep 28 20:14:05 ip-10-1-1-7 systemd[1]: keepalived.service: Succeeded.
-  Sep 28 20:14:05 ip-10-1-1-7 systemd[1]: Stopped LVS and VRRP High Availability Monitor.
+● nginx.service - NGINX Plus - high performance web server
+     Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+     Active: inactive (dead) since Thu 2025-02-06 05:05:11 UTC; 14s ago
+       Docs: https://www.nginx.com/resources/
+    Process: 4427 ExecStartPre=/usr/lib/nginx-plus/check-subscription (code=exited, status=0/SUCCESS)
+    Process: 4451 ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf (code=exited, status=0/SUCCESS)
+    Process: 22369 ExecStop=/bin/sh -c /bin/kill -s TERM $(/bin/cat /var/run/nginx.pid) (code=exited, >
+   Main PID: 4452 (code=exited, status=0/SUCCESS)
 
-出力の内容から keepalived が停止していることが確認できます
+Feb 06 02:31:34 ip-10-1-1-11 systemd[1]: Starting NGINX Plus - high performance web server...
+Feb 06 02:31:34 ip-10-1-1-11 systemd[1]: Started NGINX Plus - high performance web server.
+Feb 06 05:05:11 ip-10-1-1-11 systemd[1]: Stopping NGINX Plus - high performance web server...
+Feb 06 05:05:11 ip-10-1-1-11 systemd[1]: nginx.service: Succeeded.
+Feb 06 05:05:11 ip-10-1-1-11 systemd[1]: Stopped NGINX Plus - high performance web server.
+
+出力の内容から nginx が停止していることが確認できます
 
 以下コマンドを用いてステータスを確認します
 
@@ -488,9 +482,9 @@ Failover の結果を確認します
   :caption: 実行結果サンプル
   :linenos:
 
-  STATE=STOP
+  STATE=BACKUP
 
-keepalived が停止したためステータスが ``STOP`` となっていることが確認できます
+nginx が停止したためステータスが ``BACKUP`` となっていることが確認できます
 
 インタフェースの状態を確認します
 
@@ -505,14 +499,14 @@ keepalived が停止したためステータスが ``STOP`` となっている�
   2: ens5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc mq state UP group default qlen 1000
       link/ether 06:b4:8c:4d:47:0d brd ff:ff:ff:ff:ff:ff
       altname enp0s5
-      inet 10.1.1.7/24 brd 10.1.1.255 scope global dynamic ens5
+      inet 10.1.1.11/24 brd 10.1.1.255 scope global dynamic ens5
          valid_lft 2491sec preferred_lft 2491sec
       inet6 fe80::4b4:8cff:fe4d:470d/64 scope link
          valid_lft forever preferred_lft forever
 
 インタフェースでは、 ``VIP`` が表示されていないことが確認できます
 
-``ubuntu02`` もしくは　``ubuntu02-nginx``のステータスを確認します
+``ubuntu02-nginx``のステータスを確認します
 
 .. code-block:: cmdin
 
@@ -567,7 +561,7 @@ keepalived が停止したためステータスが ``STOP`` となっている�
 
   2: ens5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc mq state UP group default qlen 1000
       link/ether 06:f7:7d:74:47:55 brd ff:ff:ff:ff:ff:ff
-      inet 10.1.1.6/24 brd 10.1.1.255 scope global dynamic ens5
+      inet 10.1.1.12/24 brd 10.1.1.255 scope global dynamic ens5
          valid_lft 2442sec preferred_lft 2442sec
       inet 10.1.1.100/32 scope global ens5
          valid_lft forever preferred_lft forever
@@ -575,12 +569,10 @@ keepalived が停止したためステータスが ``STOP`` となっている�
          valid_lft forever preferred_lft forever
 
 
-``ubuntu02`` もしくは　``ubuntu02-nginx`` 上で疎通を確認します
+``ubuntu02-nginx`` 上で疎通を確認します
 
 .. code-block:: cmdin
 
-  curl localhost; echo; curl 10.1.1.7; echo; curl 10.1.1.6; echo; curl 10.1.1.100; echo
-  または
   curl localhost; echo; curl 10.1.1.11; echo; curl 10.1.1.12; echo; curl 10.1.1.100; echo
 
 .. NOTE::
@@ -589,21 +581,21 @@ keepalived が停止したためステータスが ``STOP`` となっている�
 
 .. code-block:: cmdin
 
-  Dest: 127.0.0.1:80 Response from ip-10-1-1-6
-  Dest: 10.1.1.7:80 Response from ip-10-1-1-7
-  Dest: 10.1.1.6:80 Response from ip-10-1-1-6
-  Dest: 10.1.1.100:80 Response from ip-10-1-1-6
+  Dest: 127.0.0.1:80 Response from ip-10-1-1-12
+  Dest: 10.1.1.11:80 Response from ip-10-1-1-11
+  Dest: 10.1.1.12:80 Response from ip-10-1-1-12
+  Dest: 10.1.1.100:80 Response from ip-10-1-1-12
 
-- ``ubuntu01`` である ``ip-10-1-1-7`` もしくは ``ubuntu01-nginx`` である ``ip-10-1-1-11`` 、 ``ubuntu02`` である ``ip-10-1-1-6`` もしくは ``ubuntu02-nginx`` である ``ip-10-1-1-12`` からの応答が確認できます
-- ``VIP`` である ``10.1.1.100`` の結果を確認すると ``ubuntu02`` もしくは ``ubuntu02-nginx`` から応答されていることが確認できます
+- ``ubuntu01-nginx`` である ``ip-10-1-1-11`` 、 ``ubuntu02-nginx`` である ``ip-10-1-1-12`` からの応答が確認できます
+- ``VIP`` である ``10.1.1.100`` の結果を確認すると ``ubuntu02-nginx`` から応答されていることが確認できます
 
-``ubuntu01`` もしくは　``ubuntu01-nginx`` へ切り戻しを行います
+``ubuntu01-nginx`` へ切り戻しを行います
 
 以下コマンドで Failover を実施します
 
 .. code-block:: cmdin
 
-  sudo systemctl start keepalived
+  sudo systemctl start nginx
 
 Failover の結果を確認します
 
@@ -655,7 +647,7 @@ Failover の結果を確認します
   2: ens5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc mq state UP group default qlen 1000
       link/ether 0a:2d:6d:00:fb:c5 brd ff:ff:ff:ff:ff:ff
       altname enp0s5
-      inet 10.1.1.7/24 brd 10.1.1.255 scope global dynamic ens5
+      inet 10.1.1.11/24 brd 10.1.1.255 scope global dynamic ens5
          valid_lft 3438sec preferred_lft 3438sec
       inet 10.1.1.100/32 scope global ens5
          valid_lft forever preferred_lft forever
@@ -676,15 +668,11 @@ Failover の結果を確認します
 ----
 
 設定の同期は、ある指定のホストからその他ホスト(郡)へ同期する機能となります。
-``ubuntu01`` もしくは ``ubuntu01-nginx`` から ``ubuntu02`` もしくは ``ubuntu02-nginx`` に同期する設定を行います。
+``ubuntu01-nginx`` から ``ubuntu02-nginx`` に同期する設定を行います。
 
-``ubuntu01`` もしくは ``ubuntu01-nginx`` で以下の操作を行ってください
+``ubuntu01-nginx`` で以下の操作を行ってください
 
 .. code-block:: cmdin
-
-  # ubuntu01-nginx を使用する場合
-  vi ~/f5j-nginx-plus-lab2-conf/lab/ha-nginx-sync.conf
-  NODES="10.1.1.6" から　NODES="10.1.1.12"に変更してください。
 
   # 設定同期に関する設定をコピー
   sudo cp ~/f5j-nginx-plus-lab2-conf/lab/ha-nginx-sync.conf /etc/nginx-sync.conf
@@ -702,13 +690,14 @@ Failover の結果を確認します
 
 .. code-block:: cmdin
 
-  ls /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/dummy.conf
+  ls /etc/nginx/conf.d/
 
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
 
-  /etc/nginx/conf.d/default.conf  /etc/nginx/conf.d/dummy.conf
+  ls /etc/nginx/conf.d/
+  api.conf  default.conf  dummy.conf 
 
 以下コマンドを実行し、設定ファイルを同期します
 
@@ -761,20 +750,20 @@ Failover の結果を確認します
 
 正しくファイルが同期されているか確認します。
 
-``ubuntu02`` もしくは ``ubuntu02-nginx`` で以下の操作を行ってください
+``ubuntu02-nginx`` で以下の操作を行ってください
 
 .. code-block:: cmdin
 
-  ls /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/dummy.conf
+  ls /etc/nginx/conf.d/
 
 .. code-block:: bash
   :caption: 実行結果サンプル
   :linenos:
 
-  ls: cannot access '/etc/nginx/conf.d/dummy.conf': No such file or directory
-  /etc/nginx/conf.d/default.conf
+  ls /etc/nginx/conf.d/
+  api.conf  default.conf  
 
-``default.conf`` は正しくファイルが存在しますが、 ``dummy.conf`` は同期の対象外のため ``ubuntu02`` もしくは ``ubuntu02-nginx`` には存在しないことがわかります
+``default.conf`` は正しくファイルが存在しますが、 ``dummy.conf`` は同期の対象外のため ``ubuntu02-nginx`` には存在しないことがわかります
 
 4. その他冗長構成
 ====
